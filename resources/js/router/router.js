@@ -1,8 +1,8 @@
 
 import Login from "../components/Auth/Login.vue";
 import {createRouter, createWebHistory} from "vue-router";
-import Chat from "../components/Chat.vue";
-import Users from "../components/Users.vue";
+import Chat from "../components/Chat/Chat.vue";
+
 import store from "../store/index.js";
 
 
@@ -17,23 +17,13 @@ const routes = [
         name : 'login',
 
     },
-
     {
-        path: '/',
-        children : [
-            {
-                path: '/chat',
-                component: Users,
-                name : 'users'
-            },
-            {
-                path: '/chat/:friendId',
-                name: 'Chat',
-                component: Chat,
-                props: true
-            }
-        ]
-    }
+      path: '/chat',
+      component: Chat,
+      name : 'chat'
+    },
+
+
 
 
 ];

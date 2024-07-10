@@ -11,26 +11,13 @@ class MessageController extends Controller
     public function getMessages(Request $request)
     {
 
-
-
-        $friendId = $request->friendId;
-        $currentUser = $request->input('currentUser');
-        $userId = $currentUser['id'];
-
+        $userId = $request->id;
         $messages = ChatMessage::query()
-            ->where(function ($query) use ($userId, $friendId) {
-                $query->where('sender_id', $userId)
-                    ->where('receiver_id', $friendId);
-            })
-            ->orWhere(function ($query) use ($userId, $friendId) {
-                $query->where('sender_id', $friendId)
-                    ->where('receiver_id', $userId);
-            })
-            ->with(['sender', 'receiver'])
+            ->where('sender_id', $userId)
+            ->orWhere('receiver_id', $userId)
+            ->with(['sender', 'receiver']) // İlişkili kullanıcı bilgilerini de alıyoruz
             ->orderBy('id', 'asc')
             ->get();
-
-
 
         return response()->json($messages);
     }

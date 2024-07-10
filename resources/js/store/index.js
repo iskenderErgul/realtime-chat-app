@@ -25,18 +25,20 @@ const actions = {
             })
 
     },
-    async login({ commit }, authData) {
-        await axios.get('/sanctum/csrf-token'); // CSRF token almak için
-        axios.post('/api/login', { ...authData })
-            .then(async res => {
-                commit('setAuthenticate', true);
-                commit('setUser', res.data);
-                await router.push('/chat');
-                console.log(state);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+    async login({commit, dispatch, state}, authData) {
+        await axios.get('/sanctum/csrf-token').then(resp => {
+            axios.post('/api/login', { ...authData })
+                .then(async res => {
+                    commit('setAuthenticate', true);
+                    commit('setUser', res.data);
+                    await router.push('/chat');
+                    console.log(state);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        })
+
     },
 
     async logout({commit, dispatch, state}) {
