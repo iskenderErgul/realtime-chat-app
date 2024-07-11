@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -25,6 +26,10 @@ class LoginController extends Controller
         } else {
             return response()->json('Giriş Başarısız', 401);
         }
+    }
+    public function logout(){
+        Session::flush();
+        return response()->json('Çıkış İşlemi Başarılı');
     }
 
     public function register(Request $request)

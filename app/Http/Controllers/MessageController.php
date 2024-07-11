@@ -2,53 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChatMessage;
-use App\Models\User;
+use App\Http\Repositories\MessageRepository;
+use App\Http\Requests\Messages\ClearMessagesRequest;
+use App\Http\Requests\Messages\GetMessagesRequest;
+use App\Http\Requests\Messages\SendMessagesRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+
 
 class MessageController extends Controller
 {
-    public function getMessages(Request $request): JsonResponse
+    protected MessageRepository $messageRepository;
+
+    public function __construct(MessageRepository $messageRepository)
+    {
+        $this->messageRepository=$messageRepository;
+    }
+
+    public function getMessages(GetMessagesRequest $request): JsonResponse
     {
 
-        $userId = $request->id;
-        $messages = ChatMessage::query()
-            ->where('sender_id', $userId)
-            ->orWhere('receiver_id', $userId)
-            ->with(['sender', 'receiver']) // İlişkili kullanıcı bilgilerini de alıyoruz
-            ->orderBy('id', 'asc')
-            ->get();
-
+        $messages = $this->messageRepository->getMessages($request);
         return response()->json($messages);
+
+
     }
 
-    public function sendMessage(Request $request): JsonResponse
+    public function sendMessage(SendMessagesRequest $request): JsonResponse
     {
-
-        $message = ChatMessage::create([
-            "sender_id" => $request->sender_id,
-            "receiver_id" => $request->receiver_id,
-            "message" => $request->message
-        ]);
-
+        $message = $this->messageRepository->sendMessage($request);
         return response()->json($message);
+
+
     }
 
-    public function clearChat(Request $request): JsonResponse
+    public function clearChat(ClearMessagesRequest $request): JsonResponse
     {
-        $senderId = $request->input('sender_id');
-        $receiverId = $request->input('receiver_id');
+        $message = $this->messageRepository->clearChat($request);
+        return response()->json($message);
 
-        ChatMessage::where('sender_id', $senderId)
-            ->where('receiver_id', $receiverId)
-            ->orWhere(function ($query) use ($senderId, $receiverId) {
-                $query->where('sender_id', $receiverId)
-                    ->where('receiver_id', $senderId);
-            })
-            ->delete();
 
-        return response()->json(['message' => 'Chat cleared successfully']);
     }
 
 }
