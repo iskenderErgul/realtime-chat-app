@@ -15,6 +15,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 });
+Route::delete('/messages/clear', [MessageController::class, 'clearChat']);
+Route::post('/messages/send',[MessageController::class,'sendMessage']);
 Route::post('/messages',[MessageController::class,'getMessages']);
 Route::get('/users',[UserController::class,'getAllUsers']);
+Route::post('/register',[LoginController::class,'register']);
 Route::post('/login',[LoginController::class,'login']);

@@ -32,9 +32,6 @@ const store = useStore();
 
 const currentUser = computed(() => store.getters.user);
 const currentUserId = currentUser.value.id;
-
-
-
 const selectedUserId = ref(null);
 
 const setSelectedUser = (userId) => {
@@ -51,7 +48,6 @@ const getAllUsers = async () =>  {
         console.error('Error fetching users:', error);
     }
 }
-
 
 onMounted(() => {
     getAllUsers();

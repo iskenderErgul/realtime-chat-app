@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 <div class="col-span-2 flex justify-end items-center">
-                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Profile</button>
+                    <button @click="goToProfile(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Profile</button>
                     <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
                 </div>
             </div>
@@ -31,6 +31,11 @@ const logout = async () => {
     await store.dispatch('logout');
     await router.push('/login');
 };
+const goToProfile = async (userId) => {
+    await router.push({ name: 'userProfile', params: { userId } });
+};
+
+
 </script>
 
 <style scoped>

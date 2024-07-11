@@ -14,7 +14,7 @@
                     <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
                         <div class="py-1">
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="chatClose">Close Chat</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer">Clear Chat</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="clearChat">Clear Chat</a>
                         </div>
                     </div>
                 </div>
@@ -95,26 +95,41 @@ onMounted(() => {
 });
 
 
-const sendMessage = () => {
+const sendMessage = async () => {
     if (newMessage.value.trim() !== '') {
-        messages.value.push({
-            id: messages.value.length + 1,
-            sender_id: props.currentUser.id,
-            receiver_id: selectedUser.value.id,
-            content: newMessage.value
+        try {
+            const response = await axios.post("/api/messages/send", {
+                sender_id: props.currentUser.id,
+                receiver_id: selectedUser.value.id,
+                message: newMessage.value
+            });
+            messages.value.push(response.data);
+            newMessage.value = '';
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+};
+
+const clearChat = async () => {
+    try {
+        await axios.delete("/api/messages/clear", {
+            params: {
+                sender_id: props.currentUser.id,
+                receiver_id: selectedUser.value.id
+            }
         });
-        newMessage.value = '';
+        messages.value = [];
+        chatClose();
+    } catch (error) {
+        console.error('Error clearing chat:', error);
     }
 };
 
 
-
-const isChatOpen = ref(true);
+const isChatOpen = ref(false);
 const chatClose = () => {
     isChatOpen.value=false;
 }
 </script>
 
-<style scoped>
-/* Gerekirse özel stiller eklenebilir */
-</style>

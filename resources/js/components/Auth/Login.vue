@@ -1,29 +1,37 @@
-<script>
-export default {
-    name: "Login",
-    data() {
-        return {
-            user: {
-                email: null,
-                password: null,
-            },
-        }
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
-    },
-    mounted() {
+const user = ref({
+    email: '',
+    password: ''
+});
 
-    },
-    methods: {
-        async login(){
-            this.$store.dispatch('login',this.user)
-        },
+const router = useRouter();
+const store = useStore();
 
+const login = async () => {
+    try {
+        await store.dispatch('login', user.value);
+    } catch (error) {
+        console.error('Login error:', error);
     }
-}
+};
+
+const goToRegister = () => {
+    router.push('/register');
+};
 </script>
 
-
 <template>
+    <button
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline absolute top-2 right-2"
+        type="button"
+        @click="goToRegister"
+    >
+        Kayıt Ol
+    </button>
     <div class="flex items-center justify-center h-screen">
         <div class="w-full max-w-md">
             <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">

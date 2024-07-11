@@ -19,7 +19,6 @@ const actions = {
             return axios.get('/api/user').then(res => {
                 commit('setAuthenticate', true)
                 commit('setUser', res.data)
-
             }).catch(err=>{
                 console.log(err)
             })
