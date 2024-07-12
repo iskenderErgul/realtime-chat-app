@@ -10,19 +10,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::delete('/messages/clear', [MessageController::class, 'clearChat']);
+    Route::post('/messages/send',[MessageController::class,'sendMessage']);
+    Route::post('/messages',[MessageController::class,'getMessages']);
+
+
+    Route::get('/users',[UserController::class,'getAllUsers']);
+    Route::get('/user/{id}',[UserController::class,'getUser']);
+    Route::put('/user/{id}', [UserController::class, 'updateUser']);
+
+
+    Route::get('/logout',[LoginController::class,'logout']);
 });
 
-Route::delete('/messages/clear', [MessageController::class, 'clearChat']);
-Route::post('/messages/send',[MessageController::class,'sendMessage']);
-Route::post('/messages',[MessageController::class,'getMessages']);
-
-Route::get('/users',[UserController::class,'getAllUsers']);
-Route::get('/user/{id}',[UserController::class,'getUser']);
-Route::put('/user/{id}', [UserController::class, 'updateUser']);
 
 
 
-Route::get('/logout',[LoginController::class,'logout']);
 Route::post('/register',[LoginController::class,'register']);
 Route::post('/login',[LoginController::class,'login']);
 
