@@ -1,6 +1,6 @@
 <template>
     <div class="mt-[90px] lg:container mx-auto">
-        <div class="gap-4 mx-2 my-2">
+        <div class="gap-4 pr-1">
             <div class="bg-white shadow-md">
                 <input
                     v-model="searchQuery"
@@ -9,7 +9,7 @@
                     class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4"
                 >
 
-                <div class="h-screen overflow-y-auto ml-1">
+                <div class="h-screen overflow-y-auto ml-2">
                     <div
                         v-for="friendItem in friends"
                         :key="friendItem.id"

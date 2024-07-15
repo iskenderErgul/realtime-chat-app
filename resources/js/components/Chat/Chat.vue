@@ -6,9 +6,9 @@
         </div>
 
         <!-- Main Content -->
-        <div class="grid grid-cols-[1fr,4fr] h-full overflow-hidden">
+        <div class="grid grid-cols-[1fr,4fr] h-full ">
             <!-- User List Component -->
-            <div class="min-w-[200px] overflow-y-auto overflow-x-hidden bg-gray-200">
+            <div class="min-w-[200px] overflow-hidden overflow-x-hidden bg-gray-200">
                 <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser"/>
             </div>
 
@@ -27,6 +27,7 @@ import ChatWindowComponent from './ChatWindow.vue';
 import UserListComponent from './UsersList.vue';
 import Header from './Header.vue';
 import axios from "axios";
+import router from "../../router/router.js";
 
 const store = useStore();
 
@@ -36,6 +37,7 @@ const selectedUserId = ref(null);
 
 const setSelectedUser = (userId) => {
     selectedUserId.value = userId;
+    router.push(`/chat/${userId}`);
 };
 
 const users =ref([]);

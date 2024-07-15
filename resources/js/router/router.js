@@ -11,46 +11,42 @@ import AddFriend from "../components/Chat/AddFriend.vue";
 
 
 const routes = [
-
     {
         path: '/chat',
         component: App,
-        children : [
+        children: [
             {
-                path : '/chat',
-                component : Chat
+                path: '',
+                component: Chat
             },
             {
-                path: '/chat/profile/:userId',
+                path: 'profile/:userId',
                 component: UserProfile,
-                name : 'userProfile'
+                name: 'userProfile'
             },
             {
-                path: 'chat/add-friend',
+                path: 'add-friend',
                 name: 'AddFriend',
                 component: AddFriend
+            },
+            {
+                path: ':userId',
+                component: Chat,
+                name: 'chatWithUser'
             }
         ]
     },
-
     {
         path: '/login',
-        component:Login,
-        name : 'login',
-
+        component: Login,
+        name: 'login',
     },
-
     {
-        path:'/register',
-        name : 'register',
+        path: '/register',
+        name: 'register',
         component: Register
     }
-
-
-
-
 ];
-
 const router = createRouter({
     history: createWebHistory(),
     routes,

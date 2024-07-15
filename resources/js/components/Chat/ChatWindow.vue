@@ -59,14 +59,14 @@
                 </div>
             </div>
 
-            <!-- Mesaj Gönderme Bölümü -->
+
             <div class="bg-gray-300 px-4 py-2 flex items-center">
                 <input v-model="newMessage" type="text" placeholder="Mesajınızı girin..." class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400">
                 <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Gönder</button>
             </div>
         </div>
 
-        <!-- Mesajlaşma Penceresi Kapalıysa -->
+
         <div v-else class="flex flex-col items-center justify-center h-screen">
             <img src="https://picsum.photos/100" alt="" class="rounded-full">
             <p class="mt-2 text-2xl font-semibold">IMS CHAT APP</p>

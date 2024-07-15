@@ -1,7 +1,8 @@
 <template>
-    <div class="container mx-auto mt-10">
+   <Header></Header>
+    <div class="container mx-auto mt-[120px]">
         <button
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline absolute top-2 right-2"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline absolute bottom-2 right-2"
             type="button"
             @click="goBack"
 
@@ -33,6 +34,7 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import router from "../../router/router.js";
 import {useStore} from "vuex";
+import Header from "@/components/Chat/Header.vue";
 const store = useStore();
 
 const searchQuery = ref('');
@@ -82,7 +84,7 @@ const getRandomColor = (seed) => {
 };
 
 const goBack = () => {
-    router.go(-1);
+    router.push('/chat');
 };
 
 onMounted(() => {
