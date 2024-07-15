@@ -6,6 +6,7 @@ import Register from "../components/Auth/Register.vue";
 import store from "../store/index.js";
 import App from "../components/App.vue";
 import UserProfile from "../components/Chat/UserProfile.vue";
+import AddFriend from "../components/Chat/AddFriend.vue";
 
 
 
@@ -23,6 +24,11 @@ const routes = [
                 path: '/chat/profile/:userId',
                 component: UserProfile,
                 name : 'userProfile'
+            },
+            {
+                path: 'chat/add-friend',
+                name: 'AddFriend',
+                component: AddFriend
             }
         ]
     },

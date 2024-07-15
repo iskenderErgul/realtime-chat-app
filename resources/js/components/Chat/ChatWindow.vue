@@ -1,11 +1,18 @@
 <template>
     <div>
-        <div v-if="selectedUser"  class="flex flex-col h-screen">
+        <div v-if="selectedUser" class="flex flex-col h-screen">
             <!-- Header -->
             <div class="bg-gray-300 px-4 py-2 flex items-center justify-between mt-20">
                 <div class="flex items-center space-x-3">
-                    <img src="https://picsum.photos/45" alt="" class="rounded-full">
-                    <p class="font-semibold">{{ selectedUser.name }}</p>
+                    <template v-if="selectedUser.avatar">
+                        <img :src="selectedUser.avatar" alt="Avatar" class="rounded-full" width="45">
+                    </template>
+                    <template v-else>
+                        <div class="rounded-full bg-gray-300 w-12 h-12 flex items-center justify-center">
+                            <span class="font-semibold text-xl text-gray-600">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
+                        </div>
+                    </template>
+                    <p class="font-semibold">{{ selectedUser.name }} {{ selectedUser.surname }}</p>
                 </div>
                 <div class="relative inline-block text-left group">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bi bi-three-dots-vertical w-6 h-6">
@@ -27,11 +34,25 @@
                         <div class="bg-green-500 p-2 rounded-md">
                             <p class="text-white">{{ message.message }}</p>
                         </div>
-                        <img src="https://picsum.photos/45" alt="" class="rounded-full">
+                        <template v-if="currentUser.avatar">
+                            <img :src="currentUser.avatar" alt="Avatar" class="rounded-full ml-2" width="35">
+                        </template>
+                        <template v-else>
+                            <div class="rounded-full bg-gray-300 w-9 h-9 flex items-center justify-center ml-2">
+                                <span class="font-semibold text-sm text-gray-600">{{ getInitials(currentUser.name, currentUser.surname) }}</span>
+                            </div>
+                        </template>
                     </div>
                     <div v-else class="flex items-start">
-                        <img src="https://picsum.photos/45" alt="" class="rounded-full">
-                        <div class="ml-3 bg-blue-500 p-2 rounded-md">
+                        <template v-if="selectedUser.avatar">
+                            <img :src="selectedUser.avatar" alt="Avatar" class="rounded-full mr-2" width="35">
+                        </template>
+                        <template v-else>
+                            <div class="rounded-full bg-gray-300 w-9 h-9 flex items-center justify-center mr-2">
+                                <span class="font-semibold text-sm text-gray-600">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
+                            </div>
+                        </template>
+                        <div class="bg-blue-500 p-2 rounded-md">
                             <p class="text-white">{{ message.message }}</p>
                         </div>
                     </div>
@@ -55,7 +76,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import axios from "axios";
 
 const props = defineProps({
@@ -67,33 +88,28 @@ const props = defineProps({
 const selectedUser = computed(() => {
     return props.users.find(user => user.id === props.selectedUserId);
 });
-const users = props.users;
-const filteredMessages = computed(() => {
-    return messages.value.filter(message =>
-        (message.sender_id === selectedUser.value.id) || (message.receiver_id === selectedUser.value.id));
-});
 
 const newMessage = ref('');
-const messages = ref();
-
+const messages = ref([]);
 
 const fetchMessages = async (userId) => {
     try {
-        const response = await axios.post("/api/messages",{
-            id : userId
-        });
+        const response = await axios.post("/api/messages", { id: userId });
         messages.value = response.data;
-
     } catch (error) {
         console.error('Error fetching messages:', error);
     }
 };
 
-onMounted(() => {
-
-    fetchMessages(props.currentUser.id);
+const filteredMessages = computed(() => {
+    return messages.value.filter(message =>
+        (message.sender_id === selectedUser.value.id) || (message.receiver_id === selectedUser.value.id)
+    );
 });
 
+onMounted(() => {
+    fetchMessages(props.currentUser.id);
+});
 
 const sendMessage = async () => {
     if (newMessage.value.trim() !== '') {
@@ -126,10 +142,19 @@ const clearChat = async () => {
     }
 };
 
-
 const isChatOpen = ref(false);
+
 const chatClose = () => {
-    isChatOpen.value=false;
-}
+    isChatOpen.value = false;
+};
+
+const getInitials = (name, surname) => {
+    const nameInitial = name ? name.charAt(0).toUpperCase() : '';
+    const surnameInitial = surname ? surname.charAt(0).toUpperCase() : '';
+    return nameInitial + surnameInitial;
+};
 </script>
 
+<style scoped>
+/* Add custom styles if needed */
+</style>

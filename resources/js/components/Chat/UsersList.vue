@@ -1,5 +1,4 @@
 <template>
-
     <div class="mt-[90px] lg:container mx-auto">
         <div class="gap-4 mx-2 my-2">
             <div class="bg-white shadow-md">
@@ -12,17 +11,18 @@
 
                 <div class="h-screen overflow-y-auto ml-1">
                     <div
-                        v-for="user in filteredUsers"
-                        :key="user.id"
-                        @click="selectUser(user.id)"
+                        v-for="friendItem in friends"
+                        :key="friendItem.id"
+                        @click="selectUser(friendItem.friend.id)"
                         class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
                     >
-                        <div>
-                            <img :src="'https://picsum.photos/45?random=' + user.id" alt="" class="rounded-full">
+                        <div :style="{ backgroundColor: getRandomColor(friendItem.id) }" class="w-12 h-12 rounded-full mr-4 flex items-center justify-center">
+                            <span class="text-xl font-semibold" v-if="!friendItem.friend.avatar">{{ getInitials(friendItem.friend.name, friendItem.friend.surname) }}</span>
+                            <img v-else :src="friendItem.friend.avatar" alt="avatar" class="w-12 h-12 rounded-full">
                         </div>
-                        <div class="ml-3">
-                            <p class="font-semibold">{{ user.name }}</p>
-                            <p class="text-sm text-gray-600">{{ user.email }}</p>
+                        <div>
+                            <p class="font-semibold">{{ friendItem.friend.name }} {{ friendItem.friend.surname }}</p>
+                            <p class="text-sm text-gray-600">{{ friendItem.friend.email }}</p>
                         </div>
                     </div>
                 </div>
@@ -32,29 +32,42 @@
 </template>
 
 <script setup>
-import {computed, ref} from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from "axios";
 
-const props = defineProps({
-    users: Array,
-    currentUserId: Number,
-});
-
+const searchQuery = ref('');
+const friends = ref([]);
 const emit = defineEmits(['userSelected']);
+
+const getFriends = async () => {
+    try {
+        const response = await axios.get('/api/friends');
+        friends.value = response.data;
+    } catch (error) {
+        console.error('Error fetching friends:', error);
+    }
+};
+
+onMounted(() => {
+    getFriends();
+});
 
 const selectUser = (userId) => {
     emit('userSelected', userId);
 };
 
-const searchQuery = ref('');
+const getInitials = (name, surname) => {
+    const nameInitial = name ? name.charAt(0).toUpperCase() : '';
+    const surnameInitial = surname ? surname.charAt(0).toUpperCase() : '';
+    return nameInitial + surnameInitial;
+};
 
-const filteredUsers = computed(() => {
-    if (!searchQuery.value.trim()) {
-        return props.users.filter(user => user.id !== props.currentUserId);
-    } else {
-        const searchTerm = searchQuery.value.toLowerCase();
-        return props.users.filter(user => {
-            return user.name.toLowerCase().includes(searchTerm) || user.email.toLowerCase().includes(searchTerm);
-        });
-    }
-});
+const getRandomColor = (seed) => {
+    const colors = [
+        '#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FF33F0',
+        '#F0FF33', '#FF333F', '#33FFF0', '#33F0FF', '#5733FF'
+    ];
+    return colors[seed % colors.length];
+};
+
 </script>

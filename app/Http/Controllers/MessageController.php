@@ -6,16 +6,19 @@ use App\Http\Repositories\MessageRepository;
 use App\Http\Requests\Messages\ClearMessagesRequest;
 use App\Http\Requests\Messages\GetMessagesRequest;
 use App\Http\Requests\Messages\SendMessagesRequest;
+use App\Interfaces\MessageRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 
 
 class MessageController extends Controller
 {
+
     protected MessageRepository $messageRepository;
+
 
     public function __construct(MessageRepository $messageRepository)
     {
-        $this->messageRepository=$messageRepository;
+        $this->messageRepository = $messageRepository;
     }
 
     public function getMessages(GetMessagesRequest $request): JsonResponse
