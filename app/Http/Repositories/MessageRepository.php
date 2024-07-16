@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Repositories;
+use App\Events\MessageSent;
 use App\Http\Requests\Messages\ClearMessagesRequest;
 use App\Http\Requests\Messages\GetMessagesRequest;
 use App\Http\Requests\Messages\SendMessagesRequest;
@@ -25,11 +26,14 @@ class MessageRepository implements MessageRepositoryInterface
 
     public function sendMessage(SendMessagesRequest $request)
     {
-        return ChatMessage::create([
+        $message= ChatMessage::create([
             "sender_id" => $request->sender_id,
             "receiver_id" => $request->receiver_id,
             "message" => $request->message
         ]);
+        broadcast(new MessageSent($message))->toOthers();
+
+        return $message;
     }
 
     public function clearChat(ClearMessagesRequest $request): string

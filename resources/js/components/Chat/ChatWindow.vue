@@ -76,8 +76,23 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import {computed, onMounted, ref, watchEffect} from 'vue';
 import axios from "axios";
+import Echo from 'laravel-echo';
+
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
+
+const echo= new Echo({
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_APP_KEY,
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
+    wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+    enabledTransports: ['ws', 'wss'],
+});
+
 
 const props = defineProps({
     currentUser: Object,
@@ -109,7 +124,16 @@ const filteredMessages = computed(() => {
 
 onMounted(() => {
     fetchMessages(props.currentUser.id);
+
+    echo.channel(`chat.${props.currentUser.id}`)
+        .listen('MessageSent', (e) => {
+            console.log(e);
+            messages.value.push(e.message);
+        });
+
 });
+
+
 
 const sendMessage = async () => {
     if (newMessage.value.trim() !== '') {

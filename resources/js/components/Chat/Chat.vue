@@ -28,6 +28,7 @@ import UserListComponent from './UsersList.vue';
 import Header from './Header.vue';
 import axios from "axios";
 import router from "../../router/router.js";
+import '../../echo.js'
 
 const store = useStore();
 
