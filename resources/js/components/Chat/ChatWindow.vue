@@ -97,6 +97,7 @@ const echo= new Echo({
 const props = defineProps({
     currentUser: Object,
     selectedUserId: Number,
+
     users: Array,
 });
 

@@ -10,6 +10,7 @@ import AddFriend from "../components/Chat/AddFriend.vue";
 
 
 
+
 const routes = [
     {
         path: '/chat',
@@ -33,7 +34,8 @@ const routes = [
                 path: ':userId',
                 component: Chat,
                 name: 'chatWithUser'
-            }
+            },
+
         ]
     },
     {

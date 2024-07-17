@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -46,8 +48,17 @@ class User extends Authenticatable
         ];
     }
 
-    public function friends(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function friends(): HasMany
     {
-        return $this->hasMany(Friend::class); // Örneğin Friend modeliyle ilişkilendirilmiş
+        return $this->hasMany(Friend::class);
+    }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'group_members');
+    }
+    public function groupMessages(): HasMany
+    {
+        return $this->hasMany(GroupMessage::class, 'sender_id');
     }
 }

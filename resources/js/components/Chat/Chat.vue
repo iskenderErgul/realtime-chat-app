@@ -1,5 +1,5 @@
 <template>
-    <div class="grid grid-rows-[auto,1fr] h-screen">
+    <div class="grid grid-rows-[auto,1fr] h-screen overflow-hidden">
         <!-- Header -->
         <div class="w-full">
             <Header></Header>
@@ -8,14 +8,19 @@
         <!-- Main Content -->
         <div class="grid grid-cols-[1fr,4fr] h-full ">
             <!-- User List Component -->
-            <div class="min-w-[200px] overflow-hidden overflow-x-hidden bg-gray-200">
-                <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser"/>
+            <div class="min-w-[200px] overflow-hidden  bg-gray-200">
+                <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser" @groupSelected="setSelectedGroup"/>
             </div>
 
             <!-- Chat Window -->
-            <div class="flex flex-col flex-1 overflow-y-auto bg-gray-100">
+            <div v-if="!selectedGroupId" class="flex flex-col flex-1 overflow-y-auto bg-gray-100">
                 <ChatWindowComponent :users="users" :currentUser="currentUser" :selectedUserId="selectedUserId"/>
             </div>
+
+            <div v-else class="flex flex-col flex-1 overflow-y-auto bg-gray-100">
+                <GroupChatWindow :currentUser="currentUser"  :selectedGroupId="selectedGroupId"/>
+            </div>
+
         </div>
     </div>
 </template>
@@ -29,16 +34,25 @@ import Header from './Header.vue';
 import axios from "axios";
 import router from "../../router/router.js";
 import '../../echo.js'
+import GroupChatWindow from "@/components/Chat/GroupChatWindow.vue";
 
 const store = useStore();
+
 
 const currentUser = computed(() => store.getters.user);
 const currentUserId = currentUser.value.id;
 const selectedUserId = ref(null);
+const selectedGroupId = ref(null);
 
 const setSelectedUser = (userId) => {
     selectedUserId.value = userId;
+    selectedGroupId.value = null; // Reset selected group if switching to a user
     router.push(`/chat/${userId}`);
+};
+
+const setSelectedGroup = (groupId) => {
+    selectedGroupId.value = groupId;
+    selectedUserId.value = null; // Reset selected user if switching to a group
 };
 
 const users =ref([]);

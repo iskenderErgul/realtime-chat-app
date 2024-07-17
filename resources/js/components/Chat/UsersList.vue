@@ -10,19 +10,43 @@
                 >
 
                 <div class="h-screen overflow-y-auto ml-2">
-                    <div
-                        v-for="friendItem in friends"
-                        :key="friendItem.id"
-                        @click="selectUser(friendItem.friend.id)"
-                        class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
-                    >
-                        <div :style="{ backgroundColor: getRandomColor(friendItem.id) }" class="w-12 h-12 rounded-full mr-4 flex items-center justify-center">
-                            <span class="text-xl font-semibold" v-if="!friendItem.friend.avatar">{{ getInitials(friendItem.friend.name, friendItem.friend.surname) }}</span>
-                            <img v-else :src="friendItem.friend.avatar" alt="avatar" class="w-12 h-12 rounded-full">
+                    <!-- Friends -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Friends</h3>
+                        <div
+                            v-for="friendItem in friends"
+                            :key="friendItem.id"
+                            @click="selectUser(friendItem.friend.id)"
+                            class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
+                        >
+                            <div :style="{ backgroundColor: getRandomColor(friendItem.id) }" class="w-12 h-12 rounded-full mr-4 flex items-center justify-center">
+                                <span class="text-xl font-semibold" v-if="!friendItem.friend.avatar">{{ getInitials(friendItem.friend.name, friendItem.friend.surname) }}</span>
+                                <img v-else :src="friendItem.friend.avatar" alt="avatar" class="w-12 h-12 rounded-full">
+                            </div>
+                            <div>
+                                <p class="font-semibold">{{ friendItem.friend.name }} {{ friendItem.friend.surname }}</p>
+                                <p class="text-sm text-gray-600">{{ friendItem.friend.email }}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="font-semibold">{{ friendItem.friend.name }} {{ friendItem.friend.surname }}</p>
-                            <p class="text-sm text-gray-600">{{ friendItem.friend.email }}</p>
+                    </div>
+
+                    <!-- Groups -->
+                    <div class="mt-4">
+                        <h3 class="text-lg font-semibold mb-2">Groups</h3>
+                        <div
+                            v-for="group in groups"
+                            :key="group.id"
+                            @click="selectGroup(group.id)"
+                            class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
+                        >
+                            <div :style="{ backgroundColor: getRandomColor(group.id) }" class="w-12 h-12 rounded-full mr-4 flex items-center justify-center">
+                                <span class="text-xl font-semibold text-white" v-if="!group.avatar">{{ getGroupInitials(group.name) }}</span>
+                                <img v-else :src="group.avatar" alt="avatar" class="w-12 h-12 rounded-full">
+                            </div>
+                            <div>
+                                <p class="font-semibold">{{ group.name }}</p>
+                                <p class="text-sm text-gray-600">{{ group.description }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -37,7 +61,9 @@ import axios from "axios";
 
 const searchQuery = ref('');
 const friends = ref([]);
-const emit = defineEmits(['userSelected']);
+const groups = ref([]);
+const emit = defineEmits(['userSelected','groupSelected']);
+
 
 const getFriends = async () => {
     try {
@@ -48,18 +74,42 @@ const getFriends = async () => {
     }
 };
 
+const getGroups = async () => {
+    try {
+        const response = await axios.get('/api/groups');
+        groups.value = response.data;
+    } catch (error) {
+        console.error('Error fetching groups:', error);
+    }
+};
+
 onMounted(() => {
     getFriends();
+    getGroups();
 });
 
 const selectUser = (userId) => {
     emit('userSelected', userId);
 };
+const selectGroup = (groupId) => {
+    emit('groupSelected',groupId);
+}
 
 const getInitials = (name, surname) => {
     const nameInitial = name ? name.charAt(0).toUpperCase() : '';
     const surnameInitial = surname ? surname.charAt(0).toUpperCase() : '';
     return nameInitial + surnameInitial;
+};
+
+const getGroupInitials = (name) => {
+    const words = name.split(' ');
+    let initials = '';
+    words.forEach(word => {
+        if (word.length > 0) {
+            initials += word.charAt(0).toUpperCase();
+        }
+    });
+    return initials;
 };
 
 const getRandomColor = (seed) => {
