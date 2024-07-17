@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GroupMessageSent;
 use App\Models\Group;
 use App\Models\GroupMessage;
 use Illuminate\Http\JsonResponse;
@@ -46,6 +47,8 @@ class GroupMessageController extends Controller
             'sender_id' => $request->sender_id,
             'message' => $request->message
         ]);
+
+        broadcast(new GroupMessageSent($message))->toOthers();
 
         return response()->json($message);
 
