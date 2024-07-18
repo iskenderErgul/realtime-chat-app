@@ -155,27 +155,25 @@ class GroupRepository implements GroupRepositoryInterface
     }
 
 
-    public function getUserGroupMessages(): JsonResponse
+    public function getUserGroupMessages($groupId): JsonResponse
     {
+
         if (!Auth::check()) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $userId = Auth::id();
 
-        $userGroups = Group::whereHas('members', function ($query) use ($userId) {
+        $group = Group::whereHas('members', function ($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->get();
+        })->where('id', $groupId)->first();
 
-        $messages = collect();
-
-        foreach ($userGroups as $group) {
-            $groupMessages = $group->messages()->with('sender')->orderBy('created_at', 'asc')->get();
-            $messages = $messages->merge($groupMessages);
+        if (!$group) {
+            return response()->json(['error' => 'Group not found or user is not a member'], 404);
         }
 
-        $messages = $messages->sortBy('created_at');
+        $groupMessages = $group->messages()->with('sender')->orderBy('created_at', 'asc')->get();
 
-        return response()->json($messages);
+        return response()->json($groupMessages);
     }
 
     public function sendGroupMessage(SendGroupMessageRequest $request): JsonResponse

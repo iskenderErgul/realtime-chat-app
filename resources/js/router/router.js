@@ -37,6 +37,11 @@ const routes = [
                 name: 'chatWithUser'
             },
             {
+                path: ':groupId',
+                component: Chat,
+                name: 'chatWithUser'
+            },
+            {
                 path: 'groups/:selectedGroupId',
                 component: GroupProfile,
                 name: 'groupProfile',
