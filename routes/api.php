@@ -15,46 +15,41 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
-    Route::delete('/messages/clear', [MessageController::class, 'clearChat']);
-    Route::post('/messages/send',[MessageController::class,'sendMessage']);
-    Route::post('/messages',[MessageController::class,'getMessages']);
 
-
+    // User Routes
     Route::get('/users',[UserController::class,'getAllUsers']);
     Route::get('/user/{id}',[UserController::class,'getUser']);
     Route::put('/user/{id}', [UserController::class, 'updateUser']);
 
 
-
+    //Friend routes
     Route::get('/friends', [FriendController::class, 'index']);
     Route::post('/friends', [FriendController::class, 'store']);
     Route::delete('/friends/{id}', [FriendController::class, 'destroy']);
 
+    //Messages routes
+    Route::delete('/messages/clear', [MessageController::class, 'clearChat']);
+    Route::post('/messages/send',[MessageController::class,'sendMessage']);
+    Route::post('/messages',[MessageController::class,'getMessages']);
 
+    //Group routes
+    Route::get('/groups', [GroupController::class, 'getAllGroupsWithMembers']);
+    Route::post('/groups', [GroupController::class, 'createGroup']);
+    Route::get('/groups/{group}', [GroupController::class, 'getGroup']);
+    Route::put('/groups/{group}', [GroupController::class, 'updateGroup']);
+    Route::delete('/groups/{group}', [GroupController::class, 'destroyGroup']);
 
-    Route::get('/groups', [GroupController::class, 'index']);
-    Route::post('/groups', [GroupController::class, 'store']);
-    Route::get('/groups/{group}', [GroupController::class, 'show']);
-    Route::put('/groups/{group}', [GroupController::class, 'update']);
-    Route::delete('/groups/{group}', [GroupController::class, 'destroy']);
-
-
-
-
-    Route::post('/groups/{group}/members', [GroupController::class, 'addMember']);
-    Route::delete('/groups/{group}/members/{userId}', [GroupController::class, 'removeMember']);
-    Route::patch('/groups/{groupId}/members/{userId}/assign-admin', [GroupController::class, 'assignAdmin']);
-    Route::patch('/groups/{groupId}/members/{userId}/remove-admin', [GroupController::class, 'removeAdmin']);
-    Route::get('/groups/{groupId}/members', [GroupController::class, 'members']);
-
-
-
-
+    // Group members routes
+    Route::post('/groups/{group}/members', [GroupMemberController::class, 'addMember']);
+    Route::delete('/groups/{group}/members/{userId}', [GroupMemberController::class, 'removeMember']);
+    Route::patch('/groups/{groupId}/members/{userId}/assign-admin', [GroupMemberController::class, 'assignAdmin']);
+    Route::patch('/groups/{groupId}/members/{userId}/remove-admin', [GroupMemberController::class, 'removeAdmin']);
+    Route::get('/groups/{groupId}/members', [GroupMemberController::class, 'getMembers']);
 
 
     // Group messages routes
-    Route::get('/groups/{group}/messages', [GroupMessageController::class, 'index']);
-    Route::post('/groups/messages', [GroupMessageController::class, 'store']);
+    Route::get('/groups/{group}/messages', [GroupMessageController::class, 'getUserGroupMessages']);
+    Route::post('/groups/messages', [GroupMessageController::class, 'sendGroupMessage']);
 
 
 

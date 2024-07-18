@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Friend;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FriendController extends Controller
 {
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): JsonResponse
     {
         $user = Auth::user();
         $friends = $user->friends()->with('friend')->get();
@@ -16,7 +17,7 @@ class FriendController extends Controller
         return response()->json($friends);
     }
 
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $user = Auth::user();
         $friendId = $request->friend_id;
@@ -29,7 +30,7 @@ class FriendController extends Controller
         return response()->json($friend, 201);
     }
 
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy($id): JsonResponse
     {
         $user = Auth::user();
         $friend = Friend::where('user_id', $user->id)->where('friend_id', $id)->first();
