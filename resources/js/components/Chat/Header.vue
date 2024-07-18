@@ -16,22 +16,40 @@
                     </div>
                 </div>
                 <div class="col-span-2 flex justify-end items-center">
-                    <button @click="goToAddFriend" class="bg-green-500 text-white px-4 py-2 rounded-md mr-2">Add Friend</button>
-                    <button @click="goToProfile(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Profile</button>
+                    <template v-if="isHomePage">
+                        <button @click="openAddGroupModal" class="bg-green-500 text-white px-4 py-2 rounded-md mr-2">Add New Group</button>
+                        <button @click="goToAddFriend" class="bg-green-500 text-white px-4 py-2 rounded-md mr-2">Add Friend</button>
+                        <button @click="goToProfile(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Profile</button>
+
+                    </template>
+                    <template v-else>
+                        <button @click="goToHomePage" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2">Geri</button>
+                    </template>
                     <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
                 </div>
+
+                <AddGroupModal v-if="showAddGroupModal" />
             </div>
         </div>
+
+
     </div>
 </template>
 
 <script setup>
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import {computed, onMounted, ref, watchEffect} from 'vue';
+import AddGroupModal from "@/components/Chat/AddGroupModal.vue";
 
 const store = useStore();
 const router = useRouter();
+const route = useRoute();
+const showAddGroupModal = ref(false);
+
+const openAddGroupModal = () => {
+    showAddGroupModal.value = true;
+};
 
 const user = computed(() => store.getters.user);
 
@@ -40,8 +58,14 @@ const logout = async () => {
     await router.push('/login');
 };
 
+const isHomePage = computed(() => route.path === '/chat');
+
 const goToProfile = async (userId) => {
     await router.push({ name: 'userProfile', params: { userId } });
+};
+
+const goToHomePage = async () => {
+    await router.push('/chat');
 };
 
 const goToAddFriend = async () => {
@@ -53,8 +77,12 @@ const getInitials = (name, surname) => {
     const surnameInitial = surname ? surname.charAt(0).toUpperCase() : '';
     return nameInitial + surnameInitial;
 };
-</script>
 
-<style scoped>
-/* Add custom styles if needed */
-</style>
+
+
+
+
+
+
+
+</script>

@@ -45,7 +45,6 @@
                             </div>
                             <div>
                                 <p class="font-semibold">{{ group.name }}</p>
-                                <p class="text-sm text-gray-600">{{ group.description }}</p>
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,7 @@ import store from "../store/index.js";
 import App from "../components/App.vue";
 import UserProfile from "../components/Chat/UserProfile.vue";
 import AddFriend from "../components/Chat/AddFriend.vue";
+import GroupProfile from "@/components/Chat/GroupProfile.vue";
 
 
 
@@ -35,6 +36,12 @@ const routes = [
                 component: Chat,
                 name: 'chatWithUser'
             },
+            {
+                path: 'groups/:selectedGroupId',
+                component: GroupProfile,
+                name: 'groupProfile',
+
+            }
 
         ]
     },

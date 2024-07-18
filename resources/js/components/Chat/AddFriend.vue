@@ -1,14 +1,7 @@
 <template>
    <Header></Header>
     <div class="container mx-auto mt-[120px]">
-        <button
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline absolute bottom-2 right-2"
-            type="button"
-            @click="goBack"
 
-        >
-            Geri
-        </button>
         <h1 class="text-2xl font-bold mb-4">Add Friends</h1>
         <input v-model="searchQuery" type="text" placeholder="Search Users" class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -83,9 +76,6 @@ const getRandomColor = (seed) => {
     return colors[seed % colors.length];
 };
 
-const goBack = () => {
-    router.push('/chat');
-};
 
 onMounted(() => {
     getAllUsers();

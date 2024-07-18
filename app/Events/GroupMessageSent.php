@@ -21,13 +21,10 @@ class GroupMessageSent implements ShouldBroadcast
         $this->message = $message;
     }
 
-    public function broadcastOn()
+    public function broadcastOn(): Channel
     {
         return new Channel('group.' . $this->message->group_id);
     }
 
-    public function broadcastWith()
-    {
-        return ['message' => $this->message];
-    }
+
 }

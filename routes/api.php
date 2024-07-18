@@ -35,6 +35,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/groups', [GroupController::class, 'index']);
     Route::post('/groups', [GroupController::class, 'store']);
     Route::get('/groups/{group}', [GroupController::class, 'show']);
+    Route::put('/groups/{group}', [GroupController::class, 'update']);
+    Route::delete('/groups/{group}', [GroupController::class, 'destroy']);
+
+
+
+
+    Route::post('/groups/{group}/members', [GroupController::class, 'addMember']);
+    Route::delete('/groups/{group}/members/{userId}', [GroupController::class, 'removeMember']);
+    Route::patch('/groups/{groupId}/members/{userId}/assign-admin', [GroupController::class, 'assignAdmin']);
+    Route::patch('/groups/{groupId}/members/{userId}/remove-admin', [GroupController::class, 'removeAdmin']);
+    Route::get('/groups/{groupId}/members', [GroupController::class, 'members']);
+
+
+
+
 
 
     // Group messages routes

@@ -2,14 +2,6 @@
    <div>
        <Header ></Header>
        <div   class="mt-[120px]">
-           <button
-               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline absolute bottom-2 right-2"
-               type="button"
-               @click="goBack"
-
-           >
-               Geri
-           </button>
            <div class="max-w-lg mx-auto mt-8">
                <h2 class="text-2xl font-semibold mb-4">Kullanıcı Profili</h2>
                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -84,9 +76,6 @@ const updateUser = () => {
     });
 };
 
-const goBack = () => {
-    router.push('/chat');
-};
 
 
 onMounted(() => {

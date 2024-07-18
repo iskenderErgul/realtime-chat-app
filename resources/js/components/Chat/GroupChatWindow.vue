@@ -17,6 +17,7 @@
             <div class="py-1">
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer">Close Chat</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer">Clear Chat</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="groupSettings(selectedGroupId)" >Group Settings</a>
             </div>
           </div>
         </div>
@@ -68,6 +69,7 @@ import {onMounted, ref, watchEffect} from "vue";
 import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';
+import router from "../../router/router.js";
 window.Pusher = Pusher;
 
 const echo= new Echo({
@@ -78,15 +80,6 @@ const echo= new Echo({
   wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
   forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
   enabledTransports: ['ws', 'wss'],
-});
-
-onMounted(() => {
-
-  echo.channel(`group.${selectedGroupId}`)
-      .listen('GroupMessageSent', (e) => {
-        messages.value.push(e.message);
-      });
-
 });
 
 const props = defineProps({
@@ -101,7 +94,14 @@ const selectedGroupName = ref(null);
 const messages = ref([]);
 const newMessage = ref("");
 
+onMounted(() => {
 
+    echo.channel(`group.${selectedGroupId}`)
+        .listen('GroupMessageSent', (e) => {
+            messages.value.push(e.message);
+        });
+
+});
 
 const fetchGroupMessages = async (groupId) => {
   try {
@@ -116,7 +116,6 @@ const getGroupDetails = async  (groupId) => {
     selectedGroupName.value=response.data.name;
     selectedGroup.value=response.data;
 }
-
 const sendMessage = async () => {
   if (!newMessage.value.trim()) return;
 
@@ -134,6 +133,9 @@ const sendMessage = async () => {
     console.error("Error sending message:", error);
   }
 };
+const groupSettings = async (selectedGroupId) => {
+    await router.push({ name: 'groupProfile', params: { selectedGroupId } });
+};
 
 
 const getGroupInitials = (name) => {
@@ -146,13 +148,12 @@ const getUserInitials = (user) => {
   return initials.toUpperCase();
 };
 
+
+
+
 watchEffect(() => {
   fetchGroupMessages(selectedGroupId);
   getGroupDetails(selectedGroupId);
 });
 
 </script>
-
-<style scoped>
-/* Scoped styles for the component */
-</style>
