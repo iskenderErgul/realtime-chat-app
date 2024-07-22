@@ -22,9 +22,9 @@ class GroupMessageController extends Controller
 
     }
 
-    public function getUserGroupMessages($groupId): JsonResponse
+    public function getUserGroupMessages(): JsonResponse
     {
-        return $this->groupRepository->getUserGroupMessages($groupId);
+        return $this->groupRepository->getUserGroupMessages();
     }
 
     public function sendGroupMessage(SendGroupMessageRequest $request): JsonResponse

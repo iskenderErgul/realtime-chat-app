@@ -34,7 +34,7 @@ import Header from './Header.vue';
 import axios from "axios";
 import router from "../../router/router.js";
 import '../../echo.js'
-import GroupChatWindow from "./GroupChatWindow.vue";
+import GroupChatWindow from "@/components/Chat/GroupChatWindow.vue";
 
 const store = useStore();
 
@@ -51,10 +51,8 @@ const setSelectedUser = (userId) => {
 };
 
 const setSelectedGroup = (groupId) => {
-
     selectedGroupId.value = groupId;
     selectedUserId.value = null; // Reset selected user if switching to a group
-    router.push(`/chat/${groupId}`);
 };
 
 const users =ref([]);

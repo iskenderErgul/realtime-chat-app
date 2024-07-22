@@ -30,7 +30,7 @@ interface GroupRepositoryInterface
 
     public function getMembers($groupId): JsonResponse;
 
-    public function getUserGroupMessages($groupId): JsonResponse;
+    public function getUserGroupMessages(): JsonResponse;
 
     public function sendGroupMessage(SendGroupMessageRequest $request): JsonResponse;
 }

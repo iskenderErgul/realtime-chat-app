@@ -65,7 +65,7 @@
 <script setup>
 
 import axios from "axios";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, ref, watchEffect} from "vue";
 import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';
@@ -88,7 +88,7 @@ const props = defineProps({
 
 });
 
-const selectedGroupId = ref(null);
+const selectedGroupId = props.selectedGroupId;
 const selectedGroup= ref(null);
 const selectedGroupName = ref(null);
 const messages = ref([]);
@@ -105,7 +105,6 @@ onMounted(() => {
 
 const fetchGroupMessages = async (groupId) => {
   try {
-
     const response = await axios.get(`/api/groups/${groupId}/messages`);
     messages.value = response.data;
   } catch (error) {
@@ -151,11 +150,10 @@ const getUserInitials = (user) => {
 
 
 
-watch(() => props.selectedGroupId, (newGroupId) => {
-    selectedGroupId.value = newGroupId;
-    fetchGroupMessages(newGroupId); // Yeni grup mesajlarını al
-    getGroupDetails(newGroupId); // Yeni grup detaylarını al
 
+watchEffect(() => {
+  fetchGroupMessages(selectedGroupId);
+  getGroupDetails(selectedGroupId);
 });
 
 </script>
