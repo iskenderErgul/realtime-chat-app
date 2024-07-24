@@ -25,17 +25,12 @@ const goToRegister = () => {
 </script>
 
 <template>
-    <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline absolute top-2 right-2"
-        type="button"
-        @click="goToRegister"
-    >
-        Kayıt Ol
-    </button>
+
     <div class="flex items-center justify-center h-screen">
         <div class="w-full max-w-md">
             <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 class="text-center text-2xl font-bold mb-6">Login</h2>
+
+                <h2 class="text-center text-2xl font-bold mb-6">IMS CHAT</h2>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                         Email
@@ -56,13 +51,21 @@ const goToRegister = () => {
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="******************"
+                        type="password"
                         v-model="user.password"
 
                     />
                 </div>
                 <div class="flex items-center justify-end">
                     <button
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline  "
+                        type="button"
+                        @click="goToRegister"
+                    >
+                        Kayıt Ol
+                    </button>
+                    <button
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2"
                         type="button"
                         @click="login"
                     >
