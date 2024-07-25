@@ -52,7 +52,9 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import Header from "@/components/Chat/Header.vue";
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const router = useRouter();
 const userId = router.currentRoute.value.params.userId;
 const user = ref({});
@@ -69,10 +71,10 @@ const getUser = () => {
 
 const updateUser = () => {
     axios.put(`/api/user/${userId}`, updatedUser.value).then((resp) => {
-        console.log('User updated successfully:', resp.data);
+        toast.success('Kullanıcı Başarıyla Güncellendi')
         getUser();
     }).catch((error) => {
-        console.error('Error updating user:', error);
+       toast.error(error.response.data.message);
     });
 };
 
