@@ -16,6 +16,7 @@ const routes = [
     {
         path: '/chat',
         component: App,
+        name: 'chat',
         children: [
             {
                 path: '',
@@ -54,6 +55,20 @@ const routes = [
         path: '/register',
         name: 'register',
         component: Register
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: to => {
+            return store.getters.authenticated ? { name: 'chat' } : { name: 'login' };
+        }
+    },
+
+
+    {
+        path: '/',
+        redirect: to => {
+            return store.getters.authenticated ? { name: 'chat' } : { name: 'login' };
+        }
     }
 ];
 const router = createRouter({
@@ -63,10 +78,18 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     try {
         await store.dispatch('authenticate');
-        if (store.getters.authenticated || to.name === 'login' || to.name === 'register') {
-            next();
+        if (store.getters.authenticated) {
+            if (to.name === 'login' || to.name === 'register') {
+                next({ name: 'chat' });
+            } else {
+                next();
+            }
         } else {
-            next({ name: 'login' });
+            if (to.name === 'login' || to.name === 'register') {
+                next();
+            } else {
+                next({ name: 'login' });
+            }
         }
     } catch (error) {
         console.error('Authentication error:', error);

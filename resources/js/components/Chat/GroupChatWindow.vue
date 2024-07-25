@@ -99,6 +99,7 @@ onMounted(() => {
     echo.channel(`group.${selectedGroupId}`)
         .listen('GroupMessageSent', (e) => {
             messages.value.push(e.message);
+            console.log(e);
         });
 
 });
@@ -127,7 +128,7 @@ const sendMessage = async () => {
 
   try {
     const response = await axios.post("/api/groups/messages", messageData);
-    messages.value.push(response.data);
+
     newMessage.value = "";
   } catch (error) {
     console.error("Error sending message:", error);

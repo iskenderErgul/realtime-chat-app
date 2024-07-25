@@ -18,7 +18,7 @@ class GroupMessageSent implements ShouldBroadcast
 
     public function __construct(GroupMessage $message)
     {
-        $this->message = $message;
+        $this->message = $message->load('sender');
     }
 
     public function broadcastOn(): Channel
