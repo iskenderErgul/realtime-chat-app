@@ -46,6 +46,9 @@ const groupName = ref('');
 const groupDescription = ref('');
 const selectedMembers = ref([]);
 const friends = ref([]);
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 const closeModal = () => {
     window.location.reload();
@@ -62,10 +65,12 @@ const createGroup = async () => {
             description: groupDescription.value,
             members: selectedMembers.value.map(member => member.id)
         });
-        console.log('Group created:', response.data);
-        closeModal();
+       toast.success('Grup Başarıyla Oluşturldu');
+        setTimeout(() => {
+            closeModal();
+        }, 3000);
     } catch (error) {
-        console.error('Error creating group:', error);
+        toast.error('Grup Oluşturulamadı');
     }
 };
 
