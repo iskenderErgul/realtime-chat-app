@@ -17,8 +17,6 @@
                 </div>
                 <div class="col-span-2 flex justify-end items-center">
                     <template v-if="isHomePage">
-                        <button @click="openAddGroupModal" class="bg-green-500 text-white px-4 py-2 rounded-md mr-2">Add New Group</button>
-                        <button @click="goToAddFriend" class="bg-green-500 text-white px-4 py-2 rounded-md mr-2">Add Friend</button>
                         <button @click="goToProfile(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Profile</button>
 
                     </template>
@@ -28,7 +26,6 @@
                     <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
                 </div>
 
-                <AddGroupModal v-if="showAddGroupModal" />
             </div>
         </div>
 
@@ -39,17 +36,13 @@
 <script setup>
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
-import {computed, onMounted, ref, watchEffect} from 'vue';
-import AddGroupModal from "@/components/Chat/AddGroupModal.vue";
+import {computed, ref} from 'vue';
+
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
-const showAddGroupModal = ref(false);
 
-const openAddGroupModal = () => {
-    showAddGroupModal.value = true;
-};
 
 const user = computed(() => store.getters.user);
 
@@ -68,9 +61,6 @@ const goToHomePage = async () => {
     await router.push('/chat');
 };
 
-const goToAddFriend = async () => {
-    await router.push({ name: 'AddFriend' });
-};
 
 const getInitials = (name, surname) => {
     const nameInitial = name ? name.charAt(0).toUpperCase() : '';

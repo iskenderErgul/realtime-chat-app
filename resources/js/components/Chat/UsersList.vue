@@ -1,13 +1,27 @@
 <template>
-    <div class="mt-[90px] lg:container mx-auto">
+    <div class="mt-[82px] lg:container mx-auto">
         <div class="gap-4 pr-1">
             <div class="bg-white shadow-md">
-                <input
-                    v-model="searchQuery"
-                    type="text"
-                    placeholder="Search"
-                    class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4"
-                >
+                <div class="flex">
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        placeholder="Search"
+                        class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4"
+                    >
+                    <div class="relative inline-block text-left group mt-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bi bi-three-dots-vertical w-6 h-6">
+                            <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                        </svg>
+                        <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
+                            <div class="py-1">
+
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer"  @click="goToAddFriend">Arkadaş Ekle</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer"  @click="openAddGroupModal">Grup Oluştur</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="h-screen overflow-y-auto ml-2">
 
@@ -51,18 +65,30 @@
                 </div>
             </div>
         </div>
+        <AddGroupModal v-if="showAddGroupModal" @close="closeAddGroupModal" />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from "axios";
+import { useRouter } from 'vue-router';
+import AddGroupModal from "./AddGroupModal.vue";
 
+const router = useRouter();
 const searchQuery = ref('');
 const friends = ref([]);
 const groups = ref([]);
+const showAddGroupModal = ref(false);
 const emit = defineEmits(['userSelected','groupSelected']);
 
+const openAddGroupModal = () => {
+    showAddGroupModal.value = true;
+};
+onMounted(() => {
+    getFriends();
+    getGroups();
+});
 
 const getFriends = async () => {
     try {
@@ -81,11 +107,11 @@ const getGroups = async () => {
         console.error('Error fetching groups:', error);
     }
 };
+const goToAddFriend = async () => {
+    await router.push({ name: 'AddFriend' });
+};
 
-onMounted(() => {
-    getFriends();
-    getGroups();
-});
+
 
 const selectUser = (userId) => {
     emit('userSelected', userId);
