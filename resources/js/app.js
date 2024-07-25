@@ -6,8 +6,11 @@ import router from './router/router.js';
 import store from  './store/index.js'
 import Toast, { POSITION } from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
-
+library.add(fas);
 
 
 /**
@@ -20,6 +23,7 @@ const app = createApp({});
 
 import App from './components/App.vue';
 app.component('app', App);
+app.component('font-awesome-icon', FontAwesomeIcon);
 app.use(router)
 app.use(store)
 app.use(Toast, {

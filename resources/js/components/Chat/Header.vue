@@ -17,10 +17,16 @@
                 </div>
                 <div class="col-span-2 flex justify-end items-center">
 
-                    <template v-if="!isHomePage">
-                        <button @click="goToHomePage" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2">Geri</button>
+                    <template v-if="showBackButton">
+                        <button @click="goToHomePage" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-6 flex items-center">
+                            <font-awesome-icon :icon="['fas', 'arrow-left']" class="mr-2 text-white" />
+                            Geri
+                        </button>
                     </template>
-                    <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
+
+                    <button @click="logout" class="bg-transparent text-red-500 hover:bg-[#0095B0] hover:text-white rounded-full p-2 transition duration-300 ease-in-out">
+                        <font-awesome-icon :icon="['fas', 'sign-out-alt']" class="text-3xl"/>
+                    </button>
                 </div>
 
             </div>
@@ -33,7 +39,8 @@
 <script setup>
 import { useStore } from 'vuex';
 import { useRouter, useRoute } from 'vue-router';
-import {computed, ref} from 'vue';
+import {computed} from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 
 const store = useStore();
@@ -47,6 +54,11 @@ const logout = async () => {
     await store.dispatch('logout');
     await router.push('/login');
 };
+
+const showBackButton = computed(() => {
+    const routesToShowButton = ['userProfile', 'AddFriend', 'groupProfile'];
+    return routesToShowButton.includes(route.name);
+});
 
 const isHomePage = computed(() => route.path === '/chat');
 
@@ -63,11 +75,15 @@ const getInitials = (name, surname) => {
     return nameInitial + surnameInitial;
 };
 
-
-
-
-
-
-
-
 </script>
+
+<style scoped>
+
+button {
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #4b5563;
+}
+</style>

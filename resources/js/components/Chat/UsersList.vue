@@ -1,13 +1,13 @@
 <template>
-    <div class="mt-[82px] lg:container mx-auto">
+    <div class="mt-[81px] lg:container mx-auto">
         <div class="gap-4 pr-1">
-            <div class="bg-white shadow-md">
-                <div class="flex">
+            <div class="bg-white shadow-md pt-2">
+                <div class="flex pl-2">
                     <input
                         v-model="searchQuery"
                         type="text"
                         placeholder="Search"
-                        class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4"
+                        class="w-full p-2 rounded-md border-b border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4"
                     >
                     <div class="relative inline-block text-left group mt-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bi bi-three-dots-vertical w-6 h-6">
@@ -27,7 +27,7 @@
                     <div>
                         <h3 class="text-lg font-semibold mb-2">Friends</h3>
                         <div
-                            v-for="friendItem in friends"
+                            v-for="friendItem in filteredFriends"
                             :key="friendItem.id"
                             @click="selectUser(friendItem.friend.id)"
                             class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
@@ -46,7 +46,7 @@
                     <div class="mt-4">
                         <h3 class="text-lg font-semibold mb-2">Groups</h3>
                         <div
-                            v-for="group in groups"
+                            v-for="group in filteredGroups"
                             :key="group.id"
                             @click="selectGroup(group.id)"
                             class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
@@ -144,6 +144,22 @@ const getGroups = async () => {
         console.error('Error fetching groups:', error);
     }
 };
+const filteredFriends = computed(() => {
+    if (!searchQuery.value) return friends.value;
+    const query = searchQuery.value.toLowerCase();
+    return friends.value.filter(friendItem => {
+        const name = `${friendItem.friend.name} ${friendItem.friend.surname}`.toLowerCase();
+        return name.includes(query);
+    });
+});
+
+const filteredGroups = computed(() => {
+    if (!searchQuery.value) return groups.value;
+    const query = searchQuery.value.toLowerCase();
+    return groups.value.filter(group => {
+        return group.name.toLowerCase().includes(query);
+    });
+});
 
 const goToAddFriend = async () => {
     await router.push({ name: 'AddFriend' });
