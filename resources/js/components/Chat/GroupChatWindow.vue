@@ -151,9 +151,11 @@ const getUserInitials = (user) => {
 
 
 
-watchEffect(() => {
-  fetchGroupMessages(selectedGroupId);
-  getGroupDetails(selectedGroupId);
-});
+watch(() => selectedGroupId, async (newGroupId) => {
+    if (newGroupId) {
+        await fetchGroupMessages(newGroupId);
+        await getGroupDetails(newGroupId);
+    }
+}, { immediate: true });
 
 </script>
