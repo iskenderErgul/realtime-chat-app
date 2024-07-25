@@ -63,10 +63,11 @@ import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import Header from "./Header.vue";
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const router = useRouter();
 const selectedGroupId = router.currentRoute.value.params.selectedGroupId;
-
 const group = ref({});
 const members = ref([]);
 const editMode = ref(false);
@@ -117,8 +118,9 @@ const assignAdmin = async (userId) => {
     try {
         await axios.patch(`/api/groups/${selectedGroupId}/members/${userId}/assign-admin`);
         fetchGroupMembers();
+        toast.success('Yönetici Atama Başarılı')
     } catch (error) {
-        console.error('Yönetici atanırken hata oluştu:', error);
+        toast.error('Yönetici Atanırken Hata Oluştu');
     }
 };
 
@@ -126,8 +128,9 @@ const removeAdmin = async (userId) => {
     try {
         await axios.patch(`/api/groups/${selectedGroupId}/members/${userId}/remove-admin`);
         fetchGroupMembers();
+        toast.success('Yönetici Yetkisi  Başarıyla Kaldırıldı')
     } catch (error) {
-        console.error('Yöneticilik kaldırılırken hata oluştu:', error);
+        toast.error('Yönetici Kaldırılırken Hata Oluştu');
     }
 };
 
@@ -137,8 +140,9 @@ const addMember = async (friendId) => {
             friend_id: friendId,
         });
         fetchGroupMembers();
+        toast.success('Üye Başarıyla Eklendi')
     } catch (error) {
-        console.error('Üye eklenirken hata oluştu:', error);
+        toast.error('Üye Eklerken Hata Oluştu');
     }
 };
 
@@ -146,17 +150,21 @@ const removeMember = async (userId) => {
     try {
         await axios.delete(`/api/groups/${selectedGroupId}/members/${userId}`);
         fetchGroupMembers();
+        toast.success('Üye Başarıyla Gruptan Çıkarıldı')
     } catch (error) {
-        console.error('Üye çıkarılırken hata oluştu:', error);
+        toast.error(error.response.data.message);
     }
 };
 
 const leaveGroup = async () => {
     try {
         await axios.delete(`/api/groups/${selectedGroupId}/members/${authUser.value.id}`);
-        await router.push('/chat');
+        toast.success('Gruptan Başarıyla Çıkıldı')
+        setTimeout(() => {
+             router.push('/chat');
+        },3000)
     } catch (error) {
-        console.error('Gruptan çıkarken hata oluştu:', error);
+        toast.error(error)
     }
 };
 const updateGroup = async () => {
@@ -167,8 +175,9 @@ const updateGroup = async () => {
         });
         fetchGroupDetails();
         toggleEditMode();
+        toast.success('Grup Bilgileri Başarıyla Güncellendi')
     } catch (error) {
-        console.error('Grup güncellenirken hata oluştu:', error);
+       toast.error('Grup bilgileri güncellenirken hata oluştu')
     }
 };
 
