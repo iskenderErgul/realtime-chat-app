@@ -31,7 +31,7 @@
                             <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
                         </div>
                     </div>
-        </div>
+            </div>
     </div>
 </template>
 

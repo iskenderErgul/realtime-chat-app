@@ -16,11 +16,8 @@
                     </div>
                 </div>
                 <div class="col-span-2 flex justify-end items-center">
-                    <template v-if="isHomePage">
-                        <button @click="goToProfile(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Profile</button>
 
-                    </template>
-                    <template v-else>
+                    <template v-if="!isHomePage">
                         <button @click="goToHomePage" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2">Geri</button>
                     </template>
                     <button @click="logout" class="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
@@ -53,9 +50,7 @@ const logout = async () => {
 
 const isHomePage = computed(() => route.path === '/chat');
 
-const goToProfile = async (userId) => {
-    await router.push({ name: 'userProfile', params: { userId } });
-};
+
 
 const goToHomePage = async () => {
     await router.push('/chat');
