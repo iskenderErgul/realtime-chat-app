@@ -61,7 +61,7 @@
 
 
             <div class="bg-gray-300 px-4 py-2 flex items-center">
-                <input v-model="newMessage" type="text" placeholder="Mesajınızı girin..." class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400">
+                <input v-model="newMessage" type="text"  @keyup.enter="sendMessage"  placeholder="Mesajınızı girin..." class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400">
                 <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Gönder</button>
             </div>
         </div>
