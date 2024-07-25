@@ -1,8 +1,13 @@
 <template>
     <div class="flex items-center justify-center h-screen">
         <div class="w-full max-w-md">
-            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <h2 class="text-center text-2xl font-bold mb-6">Kayıt Ol</h2>
+            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 shadow-custom">
+                <div class="text-center mb-10">
+                    <div class="text-gray-900 text-3xl font-medium ">
+                        <img src="../../../../public/image/0a29b111-f86f-4c98-a56e-1c0c6cc2881f.png" class="mx-auto">
+                    </div>
+                </div>
+
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                         İsim
@@ -38,9 +43,9 @@
                 </div>
 
                 <div class="flex items-center justify-between">
-                    <p class="text-gray-500 mr-3">Zaten Hesabım Var, <a @click="goToLogin" class="text-blue-800 cursor-pointer">Giriş Yap</a></p>
+                    <p class="text-gray-500 mr-3">Zaten Hesabım Var, <a @click="goToLogin" class="text-[#00B3D7]  hover:text-[#0095B0]  cursor-pointer">Giriş Yap</a></p>
                     <button
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="button"
                         @click="register"
                     >
@@ -78,6 +83,8 @@ const goToLogin = () => {
     router.push({ name: 'login' });
 };
 </script>
-
 <style>
+.shadow-custom {
+    box-shadow: 0 -4px 6px -1px rgba(0, 179, 215, 0.5), 4px 0 6px -1px rgba(0, 179, 215, 0.5), -4px 0 6px -1px rgba(0, 179, 215, 0.5);
+}
 </style>

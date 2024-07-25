@@ -65,7 +65,7 @@
 <script setup>
 
 import axios from "axios";
-import {onMounted, ref, watchEffect} from "vue";
+import {onMounted, ref, watch, watchEffect} from "vue";
 import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';

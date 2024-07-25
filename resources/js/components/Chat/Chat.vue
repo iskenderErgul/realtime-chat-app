@@ -46,13 +46,13 @@ const selectedGroupId = ref(null);
 
 const setSelectedUser = (userId) => {
     selectedUserId.value = userId;
-    selectedGroupId.value = null; // Reset selected group if switching to a user
+    selectedGroupId.value = null;
     router.push(`/chat/${userId}`);
 };
 
 const setSelectedGroup = (groupId) => {
     selectedGroupId.value = groupId;
-    selectedUserId.value = null; // Reset selected user if switching to a group
+    selectedUserId.value = null;
 };
 
 const users =ref([]);
