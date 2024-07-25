@@ -15,8 +15,8 @@
           </svg>
           <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
             <div class="py-1">
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer">Close Chat</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer">Clear Chat</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="closeChatWindow">Close Chat</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" >Clear Chat</a>
               <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="groupSettings(selectedGroupId)" >Group Settings</a>
             </div>
           </div>
@@ -147,6 +147,12 @@ const getUserInitials = (user) => {
   const initials = user.name.charAt(0) + user.surname.charAt(0);
   return initials.toUpperCase();
 };
+
+
+const closeChatWindow = ()  =>  {
+    router.push('/chat');
+    window.location.reload();
+}
 
 
 
