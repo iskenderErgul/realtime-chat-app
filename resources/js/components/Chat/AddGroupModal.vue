@@ -60,10 +60,10 @@ const createGroup = async () => {
         const response = await axios.post('/api/groups', {
             name: groupName.value,
             description: groupDescription.value,
-            members: selectedMembers.value.map(member => member.id) // Send only member IDs
+            members: selectedMembers.value.map(member => member.id)
         });
         console.log('Group created:', response.data);
-        closeModal(); // Call closeModal function correctly
+        closeModal();
     } catch (error) {
         console.error('Error creating group:', error);
     }

@@ -10,7 +10,7 @@
                 >
 
                 <div class="h-screen overflow-y-auto ml-2">
-                    <!-- Friends -->
+
                     <div>
                         <h3 class="text-lg font-semibold mb-2">Friends</h3>
                         <div
@@ -30,7 +30,7 @@
                         </div>
                     </div>
 
-                    <!-- Groups -->
+
                     <div class="mt-4">
                         <h3 class="text-lg font-semibold mb-2">Groups</h3>
                         <div

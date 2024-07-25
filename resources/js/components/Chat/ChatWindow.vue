@@ -180,6 +180,3 @@ const getInitials = (name, surname) => {
 };
 </script>
 
-<style scoped>
-/* Add custom styles if needed */
-</style>

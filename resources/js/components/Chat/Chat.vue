@@ -1,13 +1,13 @@
 <template>
     <div class="grid grid-rows-[auto,1fr] h-screen overflow-hidden">
-        <!-- Header -->
+
         <div class="w-full">
             <Header></Header>
         </div>
 
-        <!-- Main Content -->
+
         <div class="grid grid-cols-[1fr,4fr] h-full ">
-            <!-- User List Component -->
+
             <div class="min-w-[200px] overflow-hidden  bg-gray-200">
                 <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser" @groupSelected="setSelectedGroup"/>
             </div>

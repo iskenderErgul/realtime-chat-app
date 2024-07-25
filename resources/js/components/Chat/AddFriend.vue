@@ -25,13 +25,16 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
-import router from "../../router/router.js";
 import {useStore} from "vuex";
-import Header from "@/components/Chat/Header.vue";
+import Header from "./Header.vue";
 const store = useStore();
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 const searchQuery = ref('');
 const users = ref([]);
+const friends = ref([]);
 const currentUser = computed(() => store.getters.user);
 
 const getAllUsers = async () => {
@@ -43,22 +46,35 @@ const getAllUsers = async () => {
     }
 };
 
+const getFriends = async () => {
+    try {
+        const response = await axios.get('/api/friends');
+        friends.value = response.data;
+    } catch (error) {
+        console.error('Error fetching friends:', error);
+    }
+};
+
 const addFriend = async (userId) => {
     try {
         await axios.post('/api/friends', { friend_id: userId });
-        alert('Friend added successfully!');
+        toast.success('Kullanıcı Başarıyla eklendi');
+        getFriends();
     } catch (error) {
-        console.error('Error adding friend:', error);
+        toast.error('Kullanıcı Eklenemedi');
     }
 };
 
 const filteredUsers = computed(() => {
+    const friendIds = friends.value.map(friend => friend.id);
     if (!searchQuery.value.trim()) {
-        return users.value.filter(user => user.id !== currentUser.value.id); // Filter out current user
+        return users.value.filter(user => user.id !== currentUser.value.id && !friendIds.includes(user.id));
     }
     const searchTerm = searchQuery.value.toLowerCase();
     return users.value.filter(user =>
-        (user.name.toLowerCase().includes(searchTerm) || user.email.toLowerCase().includes(searchTerm)) && user.id !== currentUser.value.id
+        (user.name.toLowerCase().includes(searchTerm) || user.email.toLowerCase().includes(searchTerm)) &&
+        user.id !== currentUser.value.id &&
+        !friendIds.includes(user.id)
     );
 });
 
@@ -76,9 +92,8 @@ const getRandomColor = (seed) => {
     return colors[seed % colors.length];
 };
 
-
 onMounted(() => {
     getAllUsers();
-
+    getFriends();
 });
 </script>

@@ -82,7 +82,3 @@ onMounted(() => {
     getUser();
 });
 </script>
-
-<style scoped>
-/* Gerekirse özel stiller ekleyebilirsiniz */
-</style>

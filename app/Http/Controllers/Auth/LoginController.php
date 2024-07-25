@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
-    public function login(Request $request){
+    public function login(Request $request): JsonResponse
+    {
 
         $userControl = [
             'email'  =>  $request->email,
@@ -27,12 +28,13 @@ class LoginController extends Controller
             return response()->json('Giriş Başarısız', 401);
         }
     }
-    public function logout(){
+    public function logout(): JsonResponse
+    {
         Session::flush();
         return response()->json('Çıkış İşlemi Başarılı');
     }
 
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
 
         $user = User::create([
@@ -42,6 +44,6 @@ class LoginController extends Controller
         ]);
 
 
-        return response()->json(['message' => 'Kullanıcı başarıyla kaydedildi', 'user' => $user], 201);
+        return response()->json(['message' => 'Kayıt Başarılı. Giriş Yapabilirsiniz', 'user' => $user], 201);
     }
 }

@@ -61,7 +61,8 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
+import { useToast } from 'vue-toastification';
+const toast = useToast();
 const router = useRouter();
 const user = ref({
     name: null,
@@ -72,10 +73,10 @@ const user = ref({
 const register = async () => {
     try {
         const response = await axios.post('/api/register', user.value);
-        console.log('Registration successful:', response.data);
-        router.push({ name: 'login' });
+        toast.success(response.data.message);
+        await router.push({name: 'login'});
     } catch (error) {
-        console.error('Error during registration:', error);
+        toast.success(response.data.message);
     }
 };
 
