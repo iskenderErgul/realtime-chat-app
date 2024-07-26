@@ -43,9 +43,9 @@ class GroupController extends Controller
         $group = $this->groupRepository->updateGroup($request,$id);
         return response()->json($group);
     }
-    public function destroyGroup(): void
+    public function destroyGroup($id): void
     {
-            $this->groupRepository->destroyGroup();
+            $this->groupRepository->destroyGroup($id);
     }
 
 

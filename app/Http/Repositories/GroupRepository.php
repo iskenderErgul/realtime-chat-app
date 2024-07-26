@@ -22,157 +22,133 @@ class GroupRepository implements GroupRepositoryInterface
         return response()->json($groups);
     }
 
-    public function createGroup(CreateGroupRequest $request){
+    public function createGroup(CreateGroupRequest $request): Group
+    {
         $group = Group::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-
         ]);
 
-        $group->members()->attach([
-            Auth::id() => ['is_admin' => true, 'created_at' => now(), 'updated_at' => now()]
-        ]);
+        $this->addMemberToGroup($group->id, Auth::id(), true);
 
         if ($request->has('members')) {
             foreach ($request->input('members') as $memberId) {
-
-                GroupMember::create([
-                    'group_id' => $group->id,
-                    'user_id' => $memberId,
-                    'is_admin' => false
-                ]);
+                $this->addMemberToGroup($group->id, $memberId);
             }
         }
 
         return $group;
     }
 
-    public  function getGroup($id) {
-        return $group = Group::findOrFail($id);
+    private function addMemberToGroup(int $groupId, int $userId, bool $isAdmin = false): void
+    {
+        GroupMember::create([
+            'group_id' => $groupId,
+            'user_id' => $userId,
+            'is_admin' => $isAdmin,
+        ]);
     }
 
-    public function updateGroup(UpdateGroupRequest $request, $id) {
-        $group = Group::findOrFail($id);
+    public function getGroup(int $id): Group
+    {
+        return Group::findOrFail($id);
+    }
+
+    public function updateGroup(UpdateGroupRequest $request, int $id): Group
+    {
+        $group = $this->getGroup($id);
         $group->update($request->all());
         return $group;
     }
 
-    public function destroyGroup(){
-
+    public function destroyGroup(int $id): JsonResponse
+    {
+        $group = Group::findOrFail($id);
+        GroupMember::where('group_id', $id)->delete();
+        $group->delete();
+        return response()->json(['message' => 'Grup başarıyla silindi.']);
     }
 
-    public function addMember(AddGroupMemberRequest $request, $id): JsonResponse
+    public function addMember(AddGroupMemberRequest $request, int $id): JsonResponse
     {
-        $friend_id = $request->friend_id;
-        $group_id = $id;
-
-        GroupMember::create([
-            'group_id' => $group_id,
-            'user_id' => $friend_id,
-        ]);
-
-        return response()->json(['message' => 'Üye eklendi.']);
+        $this->addMemberToGroup($id, $request->friend_id);
+        return response()->json(['message' => 'Member added.']);
     }
 
-    public function  removeMember($groupId, $userId): JsonResponse
+    public function removeMember(int $groupId, int $userId): JsonResponse
     {
-
-        $adminCount = GroupMember::where('group_id', $groupId)
-            ->where('is_admin', true)
-            ->count();
-
         $groupMember = GroupMember::where('group_id', $groupId)
             ->where('user_id', $userId)
             ->firstOrFail();
 
-        if ($groupMember->is_admin) {
-
-            if ($adminCount > 1) {
-                $groupMember->delete();
-                return response()->json(['message' => 'Yönetici olarak gruptan çıktınız.']);
-            } else {
-
-                return response()->json(['message' => 'Bu grupta başka bir yönetici kalmadı. Yeni bir yönetici atayarak çıkabilirsiniz.'], 403);
-            }
+        if ($groupMember->is_admin && $this->adminCount($groupId) <= 1) {
+            return response()->json(['message' => 'Cannot remove the last admin.'], 403);
         }
 
         $groupMember->delete();
-        return response()->json(['message' => 'Üye çıkarıldı.']);
+        return response()->json(['message' => $groupMember->is_admin ? 'Admin removed.' : 'Member removed.']);
     }
 
-    public function assignAdmin($groupId,$userId): JsonResponse
+    private function adminCount(int $groupId): int
     {
-        $isAdmin = GroupMember::where('user_id',Auth::user()->id)
-            ->where('is_admin',true)
+        return GroupMember::where('group_id', $groupId)
+            ->where('is_admin', true)
+            ->count();
+    }
+
+    public function assignAdmin(int $groupId, int $userId): JsonResponse
+    {
+        if (!$this->isCurrentUserAdmin()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        GroupMember::where('group_id', $groupId)
+            ->where('user_id', $userId)
+            ->update(['is_admin' => true]);
+
+        return response()->json(['message' => 'Admin assigned.']);
+    }
+
+    public function removeAdmin(int $groupId, int $userId): JsonResponse
+    {
+        if ($this->isCurrentUser($userId)) {
+            return response()->json(['message' => 'Kendinizi yönetici olarak kaldıramazsınız.'], 403);
+        }
+
+        if (!$this->isCurrentUserAdmin()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        GroupMember::where('group_id', $groupId)
+            ->where('user_id', $userId)
+            ->update(['is_admin' => false]);
+
+        return response()->json(['message' => 'Admin rolü kaldırıldı.']);
+    }
+
+    private function isCurrentUserAdmin(): bool
+    {
+        return GroupMember::where('user_id', Auth::id())
+            ->where('is_admin', true)
             ->exists();
-
-        if($isAdmin){
-            GroupMember::where('group_id',$groupId)
-                ->where('user_id',$userId)
-                ->update([
-                    'is_admin' => true
-                ]);
-
-            return response()->json(['message' => 'Yönetici atandı.'],200);
-
-        }else{
-            return response()->json(['message' => 'Yetkisiz erişim.'], 403);
-        }
     }
 
-    public function removeAdmin($groupId,$userId): JsonResponse
+    private function isCurrentUser(int $userId): bool
     {
-        $authUser = Auth::user();
-
-
-        if ($authUser->id != $userId) {
-            $isAdmin = GroupMember::where('user_id', $authUser->id)
-                ->where('is_admin', true)
-                ->exists();
-
-            if ($isAdmin) {
-                GroupMember::where('group_id', $groupId)
-                    ->where('user_id', $userId)
-                    ->update([
-                        'is_admin' => false
-                    ]);
-
-                return response()->json(['message' => 'Kullanıcı Yöneticilikten Çıkarıldı.'], 200);
-            } else {
-                return response()->json(['message' => 'Yetkisiz erişim.'], 403);
-            }
-        } else {
-            return response()->json(['message' => 'Kendinizi yöneticilikten çıkaramazsınız.'], 403);
-        }
+        return Auth::id() === $userId;
     }
 
-    public function getMembers($groupId): JsonResponse
+    public function getMembers(int $groupId): JsonResponse
     {
-        $group = Group::findOrFail($groupId);
-        $members = $group->members()->withPivot('is_admin')->get();
-
+        $members = Group::findOrFail($groupId)->members()->withPivot('is_admin')->get();
         return response()->json($members);
     }
 
-
-    public function getUserGroupMessages($groupId): JsonResponse
+    public function getUserGroupMessages(int $groupId): JsonResponse
     {
-        if (!Auth::check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        $userId = Auth::id();
-
-
-        $isMember = Group::whereHas('members', function ($query) use ($userId, $groupId) {
-            $query->where('user_id', $userId)
-                ->where('group_id', $groupId);
-        })->exists();
-
-        if (!$isMember) {
+        if (!Auth::check() || !$this->isUserInGroup(Auth::id(), $groupId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
 
         $messages = Group::findOrFail($groupId)
             ->messages()
@@ -183,18 +159,24 @@ class GroupRepository implements GroupRepositoryInterface
         return response()->json($messages);
     }
 
+    private function isUserInGroup(int $userId, int $groupId): bool
+    {
+        return Group::whereHas('members', function ($query) use ($userId, $groupId) {
+            $query->where('user_id', $userId)
+                ->where('group_id', $groupId);
+        })->exists();
+    }
+
     public function sendGroupMessage(SendGroupMessageRequest $request): JsonResponse
     {
         $message = GroupMessage::create([
             'group_id' => $request->group_id,
             'sender_id' => $request->sender_id,
-            'message' => $request->message
+            'message' => $request->message,
         ]);
 
         broadcast(new GroupMessageSent($message))->toOthers();
 
         return response()->json($message);
     }
-
-
 }

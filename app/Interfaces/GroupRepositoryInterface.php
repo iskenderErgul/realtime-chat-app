@@ -6,31 +6,108 @@ use App\Http\Requests\Group\AddGroupMemberRequest;
 use App\Http\Requests\Group\CreateGroupRequest;
 use App\Http\Requests\Group\SendGroupMessageRequest;
 use App\Http\Requests\Group\UpdateGroupRequest;
+use App\Models\Group;
 use Illuminate\Http\JsonResponse;
 
 interface GroupRepositoryInterface
 {
+    /**
+     * Retrieve all groups with their members.
+     *
+     * @return JsonResponse
+     */
     public function getAllGroupsWithMembers(): JsonResponse;
 
-    public function createGroup(CreateGroupRequest $request);
+    /**
+     * Create a new group.
+     *
+     * @param CreateGroupRequest $request
+     * @return Group
+     */
+    public function createGroup(CreateGroupRequest $request): Group;
 
-    public function getGroup($id);
+    /**
+     * Retrieve a group by its ID.
+     *
+     * @param int $id
+     * @return Group
+     */
+    public function getGroup(int $id): Group;
 
-    public function updateGroup(UpdateGroupRequest $request, $id);
+    /**
+     * Update a group's information.
+     *
+     * @param UpdateGroupRequest $request
+     * @param int $id
+     * @return Group
+     */
+    public function updateGroup(UpdateGroupRequest $request, int $id): Group;
 
-    public function destroyGroup();
+    /**
+     * Delete a group by its ID.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroyGroup(int $id): JsonResponse;
 
-    public function addMember(AddGroupMemberRequest $request, $id): JsonResponse;
+    /**
+     * Add a member to a group.
+     *
+     * @param AddGroupMemberRequest $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function addMember(AddGroupMemberRequest $request, int $id): JsonResponse;
 
-    public function removeMember($groupId, $userId): JsonResponse;
+    /**
+     * Remove a member from a group.
+     *
+     * @param int $groupId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function removeMember(int $groupId, int $userId): JsonResponse;
 
-    public function assignAdmin($groupId, $userId): JsonResponse;
+    /**
+     * Assign admin role to a user in a group.
+     *
+     * @param int $groupId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function assignAdmin(int $groupId, int $userId): JsonResponse;
 
-    public function removeAdmin($groupId, $userId): JsonResponse;
+    /**
+     * Remove admin role from a user in a group.
+     *
+     * @param int $groupId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function removeAdmin(int $groupId, int $userId): JsonResponse;
 
-    public function getMembers($groupId): JsonResponse;
+    /**
+     * Retrieve members of a group.
+     *
+     * @param int $groupId
+     * @return JsonResponse
+     */
+    public function getMembers(int $groupId): JsonResponse;
 
-    public function getUserGroupMessages($groupId): JsonResponse;
+    /**
+     * Retrieve messages of a group.
+     *
+     * @param int $groupId
+     * @return JsonResponse
+     */
+    public function getUserGroupMessages(int $groupId): JsonResponse;
 
+    /**
+     * Send a message in a group.
+     *
+     * @param SendGroupMessageRequest $request
+     * @return JsonResponse
+     */
     public function sendGroupMessage(SendGroupMessageRequest $request): JsonResponse;
 }

@@ -54,6 +54,12 @@
                 </li>
             </ul>
         </div>
+
+        <div class="bg-gray-50 p-4 rounded-md shadow-sm">
+            <button @click="deleteGroup" class="bg-red-500 text-white p-2 rounded-md hover:bg-red-600">
+                Grubu Sil
+            </button>
+        </div>
     </div>
 </template>
 
@@ -86,7 +92,6 @@ const fetchGroupDetails = async () => {
         console.error('Grup bilgileri alınırken hata oluştu:', error);
     }
 };
-
 const getFriends = async () => {
     try {
         const response = await axios.get('/api/friends');
@@ -95,7 +100,6 @@ const getFriends = async () => {
         console.error('Arkadaşlar alınırken hata oluştu:', error);
     }
 };
-
 const fetchGroupMembers = async () => {
     try {
         const response = await axios.get(`/api/groups/${selectedGroupId}/members`);
@@ -104,7 +108,6 @@ const fetchGroupMembers = async () => {
         console.error('Grup üyeleri alınırken hata oluştu:', error);
     }
 };
-
 const fetchAuthUser = async () => {
     try {
         const response = await axios.get('/api/user');
@@ -113,7 +116,6 @@ const fetchAuthUser = async () => {
         console.error('Oturum açmış kullanıcı bilgileri alınırken hata oluştu:', error);
     }
 };
-
 const assignAdmin = async (userId) => {
     try {
         await axios.patch(`/api/groups/${selectedGroupId}/members/${userId}/assign-admin`);
@@ -123,17 +125,15 @@ const assignAdmin = async (userId) => {
         toast.error('Yönetici Atanırken Hata Oluştu');
     }
 };
-
 const removeAdmin = async (userId) => {
     try {
         await axios.patch(`/api/groups/${selectedGroupId}/members/${userId}/remove-admin`);
         fetchGroupMembers();
         toast.success('Yönetici Yetkisi  Başarıyla Kaldırıldı')
     } catch (error) {
-        toast.error('Yönetici Kaldırılırken Hata Oluştu');
+        toast.error('Kendinizi yönetici olarak kaldıramazsınız');
     }
 };
-
 const addMember = async (friendId) => {
     try {
         await axios.post(`/api/groups/${selectedGroupId}/members`, {
@@ -145,7 +145,6 @@ const addMember = async (friendId) => {
         toast.error('Üye Eklerken Hata Oluştu');
     }
 };
-
 const removeMember = async (userId) => {
     try {
         await axios.delete(`/api/groups/${selectedGroupId}/members/${userId}`);
@@ -155,7 +154,6 @@ const removeMember = async (userId) => {
         toast.error(error.response.data.message);
     }
 };
-
 const leaveGroup = async () => {
     try {
         await axios.delete(`/api/groups/${selectedGroupId}/members/${authUser.value.id}`);
@@ -180,7 +178,20 @@ const updateGroup = async () => {
        toast.error('Grup bilgileri güncellenirken hata oluştu')
     }
 };
-
+const deleteGroup=async () => {
+    if (confirm('Bu grubu silmek istediğinizden emin misiniz?')) {
+        try {
+            await axios.delete(`/api/groups/${selectedGroupId}`)
+            toast.success('Grup başarıyla silindi.')
+            setTimeout(() => {
+                router.push('/chat');
+            },3000)
+        } catch (error) {
+            console.error('Grup silinirken bir hata oluştu:', error)
+            toast.error('Grup silinirken bir hata oluştu.')
+        }
+    }
+}
 const toggleEditMode = () => {
     editMode.value = !editMode.value;
 };
