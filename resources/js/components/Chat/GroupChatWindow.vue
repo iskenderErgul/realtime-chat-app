@@ -157,7 +157,10 @@ const getUserInitials = (user) => {
 
 const closeChatWindow = ()  =>  {
     router.push('/chat');
-    window.location.reload();
+    setTimeout(() => {
+        window.location.reload();
+
+    },200)
 }
 const formatDate = (dateString) => {
     const options = {

@@ -171,7 +171,10 @@ const clearChat = async () => {
 
 const closeChatWindow = ()  =>  {
     router.push('/chat');
-    window.location.reload();
+    setTimeout(() => {
+        window.location.reload();
+
+    },200)
 }
 
 const getInitials = (name, surname) => {
