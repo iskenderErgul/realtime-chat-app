@@ -11,6 +11,7 @@ const user = ref({
 const router = useRouter();
 const store = useStore();
 
+
 const login = async () => {
     try {
         await store.dispatch('login', user.value);
@@ -67,6 +68,7 @@ const goToRegister = () => {
                         class="bg-[#00B3D7] hover:bg-[#0095B0] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline  block w-full mb-2"
                         type="button"
                         @click="login"
+                        v-tooltip="'Giriş Yap'"
                     >
                             Giriş Yap
                     </button>
@@ -75,6 +77,7 @@ const goToRegister = () => {
                         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline   block w-full mb-2"
                         type="button"
                         @click="goToRegister"
+                        v-tooltip="'Kayıt Ol'"
                     >
                         Kayıt Ol
                     </button>

@@ -29,7 +29,8 @@
         <div v-for="message in messages" :key="message.id" class="mb-4">
           <div v-if="message.sender_id === currentUser.id" class="flex items-end justify-end">
             <div class="bg-green-500 p-2 rounded-md">
-              <p class="text-white">{{ message.message }}</p>
+              <p class="text-white" :data-tooltip="formatDate(message.updated_at)"
+                 v-tooltip="formatDate(message.updated_at)">{{ message.message }}</p>
             </div>
           </div>
           <div v-else class="flex items-start">
@@ -38,7 +39,10 @@
                 <p class="text-sm">{{ getUserInitials(message.sender) }}</p>
               </div>
               <div class="bg-blue-500 p-2 rounded-md">
-                <p class="text-white">{{ message.message }}</p>
+                  <p class="text-white"
+                     v-tooltip="`${message.sender.name} ${message.sender.surname} - ${formatDate(message.updated_at)}`">
+                      {{ message.message }}
+                  </p>
               </div>
             </div>
           </div>
@@ -65,7 +69,7 @@
 <script setup>
 
 import axios from "axios";
-import {onMounted, ref, watch, watchEffect} from "vue";
+import {onMounted, ref, watch, computed} from "vue";
 import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';
@@ -103,6 +107,7 @@ onMounted(() => {
         });
 
 });
+
 
 const fetchGroupMessages = async (groupId) => {
   try {
@@ -154,6 +159,21 @@ const closeChatWindow = ()  =>  {
     router.push('/chat');
     window.location.reload();
 }
+const formatDate = (dateString) => {
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+
+    };
+
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString('tr-TR', options);
+};
 
 
 

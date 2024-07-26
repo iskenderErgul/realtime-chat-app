@@ -34,7 +34,7 @@ import Header from './Header.vue';
 import axios from "axios";
 import router from "../../router/router.js";
 import '../../echo.js'
-import GroupChatWindow from "@/components/Chat/GroupChatWindow.vue";
+import GroupChatWindow from "./GroupChatWindow.vue";
 
 const store = useStore();
 
@@ -43,6 +43,7 @@ const currentUser = computed(() => store.getters.user);
 const currentUserId = currentUser.value.id;
 const selectedUserId = ref(null);
 const selectedGroupId = ref(null);
+const users =ref([]);
 
 const setSelectedUser = (userId) => {
     selectedUserId.value = userId;
@@ -54,8 +55,6 @@ const setSelectedGroup = (groupId) => {
     selectedGroupId.value = groupId;
     selectedUserId.value = null;
 };
-
-const users =ref([]);
 const getAllUsers = async () =>  {
     try {
 

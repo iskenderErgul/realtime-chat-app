@@ -32,7 +32,8 @@
                 <div v-for="message in filteredMessages" :key="message.id" class="mb-4">
                     <div v-if="message.sender_id === currentUser.id" class="flex items-end justify-end">
                         <div class="bg-green-500 p-2 rounded-md">
-                            <p class="text-white">{{ message.message }}</p>
+                            <p class="text-white" :data-tooltip="formatDate(message.updated_at)"
+                               v-tooltip="formatDate(message.updated_at)">{{ message.message }}</p>
                         </div>
                         <template v-if="currentUser.avatar">
                             <img :src="currentUser.avatar" alt="Avatar" class="rounded-full ml-2" width="35">
@@ -53,7 +54,8 @@
                             </div>
                         </template>
                         <div class="bg-blue-500 p-2 rounded-md">
-                            <p class="text-white">{{ message.message }}</p>
+                            <p class="text-white" :data-tooltip="formatDate(message.updated_at)"
+                               v-tooltip="formatDate(message.updated_at)">{{ message.message }}</p>
                         </div>
                     </div>
                 </div>
@@ -109,6 +111,7 @@ const selectedUser = computed(() => {
 const newMessage = ref('');
 const messages = ref([]);
 
+
 const fetchMessages = async (userId) => {
     try {
         const response = await axios.post("/api/messages", { id: userId });
@@ -134,8 +137,6 @@ onMounted(() => {
         });
 
 });
-
-
 
 const sendMessage = async () => {
     if (newMessage.value.trim() !== '') {
@@ -168,18 +169,31 @@ const clearChat = async () => {
     }
 };
 
-
-
 const closeChatWindow = ()  =>  {
     router.push('/chat');
     window.location.reload();
 }
 
-
 const getInitials = (name, surname) => {
     const nameInitial = name ? name.charAt(0).toUpperCase() : '';
     const surnameInitial = surname ? surname.charAt(0).toUpperCase() : '';
     return nameInitial + surnameInitial;
+};
+
+const formatDate = (dateString) => {
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+
+    };
+
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString('tr-TR', options);
 };
 </script>
 

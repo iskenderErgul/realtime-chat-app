@@ -9,6 +9,9 @@ import 'vue-toastification/dist/index.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import FloatingVue from 'floating-vue'
+import 'floating-vue/dist/style.css';
+
 
 library.add(fas);
 
@@ -24,6 +27,7 @@ const app = createApp({});
 import App from './components/App.vue';
 app.component('app', App);
 app.component('font-awesome-icon', FontAwesomeIcon);
+app.use(FloatingVue)
 app.use(router)
 app.use(store)
 app.use(Toast, {

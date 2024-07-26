@@ -24,7 +24,7 @@
                         </button>
                     </template>
 
-                    <button @click="logout" class="bg-transparent text-red-500 hover:bg-[#0095B0] hover:text-white rounded-full p-2 transition duration-300 ease-in-out">
+                    <button @click="logout" class="bg-transparent text-red-500 hover:bg-[#0095B0] hover:text-white rounded-full p-2 transition duration-300 ease-in-out" v-tooltip="'Çıkış Yap'">
                         <font-awesome-icon :icon="['fas', 'sign-out-alt']" class="text-3xl"/>
                     </button>
                 </div>
