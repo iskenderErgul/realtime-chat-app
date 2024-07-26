@@ -1,23 +1,23 @@
 <template>
-    <div class="grid grid-rows-[auto,1fr] h-screen overflow-hidden">
+    <div class="grid grid-rows-[auto,1fr] h-screen overflow-hidden ">
 
-        <div class="w-full">
+        <div class="w-full ">
             <Header></Header>
         </div>
 
 
-        <div class="grid grid-cols-[1fr,4fr] h-full ">
+        <div class="grid grid-cols-[1fr,4fr] h-full  ">
 
-            <div class="min-w-[200px] overflow-hidden  bg-gray-200">
+            <div class="min-w-[200px] overflow-y-auto  bg-gray-200">
                 <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser" @groupSelected="setSelectedGroup"/>
             </div>
 
             <!-- Chat Window -->
-            <div v-if="!selectedGroupId" class="flex flex-col flex-1 overflow-y-auto bg-gray-100">
+            <div v-if="!selectedGroupId" class="flex flex-col flex-1 overflow-hidden  bg-gray-100">
                 <ChatWindowComponent :users="users" :currentUser="currentUser" :selectedUserId="selectedUserId"/>
             </div>
 
-            <div v-else class="flex flex-col flex-1 overflow-y-auto bg-gray-100">
+            <div v-else class="flex flex-col flex-1 overflow-hidden  bg-gray-100">
                 <GroupChatWindow :currentUser="currentUser"  :selectedGroupId="selectedGroupId"/>
             </div>
 
