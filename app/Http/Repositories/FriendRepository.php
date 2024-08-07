@@ -4,6 +4,7 @@ namespace App\Http\Repositories;
 
 use App\Http\Requests\Friend\CreateFriendRequest;
 use App\Interfaces\FriendRepositoryInterface;
+use App\Models\ChatMessage;
 use App\Models\Friend;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,39 @@ class FriendRepository  implements FriendRepositoryInterface
     {
         $user = Auth::user();
         $friends = $user->friends()->with('friend')->get();
+
+        return response()->json($friends);
+    }
+
+    public function getMessagedFriends(): JsonResponse
+    {
+        $user = Auth::user();
+
+
+        $messagedFriends = ChatMessage::where(function ($query) use ($user) {
+            $query->where('sender_id', $user->id)
+                ->orWhere('receiver_id', $user->id);
+        })->distinct('sender_id', 'receiver_id')->get(['sender_id', 'receiver_id']);
+
+        $messagedFriendIds = $messagedFriends->pluck('sender_id')->merge($messagedFriends->pluck('receiver_id'))->unique();
+
+        $friends = Friend::where('user_id', $user->id)
+            ->whereIn('friend_id', $messagedFriendIds)
+            ->with('friend')
+            ->get();
+
+        foreach ($friends as $friend) {
+            $lastMessage = ChatMessage::where(function ($query) use ($user, $friend) {
+                $query->where('sender_id', $user->id)
+                    ->where('receiver_id', $friend->friend_id);
+            })->orWhere(function ($query) use ($user, $friend) {
+                $query->where('receiver_id', $user->id)
+                    ->where('sender_id', $friend->friend_id);
+            })->latest('created_at')->first();
+
+            $friend->last_message = $lastMessage ? $lastMessage->message : 'No messages yet';
+            $friend->last_message_sender_id = $lastMessage ? $lastMessage->sender_id : null; // Eklenen satır
+        }
 
         return response()->json($friends);
     }

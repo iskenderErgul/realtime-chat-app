@@ -26,6 +26,11 @@ class FriendController extends Controller
         return $this->friendRepository->getFriends();
     }
 
+    public function getMessagedFriends(): JsonResponse
+    {
+        return $this->friendRepository->getMessagedFriends();
+    }
+
     public function createFriend(CreateFriendRequest $request): JsonResponse
     {
         return  $this->friendRepository->createFriend($request);

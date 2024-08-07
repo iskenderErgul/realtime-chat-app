@@ -1,22 +1,40 @@
 <template>
-   <Header></Header>
+    <Header />
     <div class="container mx-auto mt-[120px]">
-
-        <h1 class="text-2xl font-bold mb-4">Add Friends</h1>
-        <input v-model="searchQuery" type="text" placeholder="Search Users" class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div v-for="user in filteredUsers" :key="user.id" class="p-4 border rounded-md flex justify-between items-center">
-                <div class="flex items-center">
-                    <div :style="{ backgroundColor: getRandomColor(user.id) }" class="w-12 h-12 rounded-full mr-4 flex items-center justify-center">
-                        <span class="text-xl font-semibold" v-if="!user.avatar">{{ getInitials(user.name, user.surname) }}</span>
-                        <img v-else :src="user.avatar" alt="avatar" class="w-12 h-12 rounded-full">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Arkadaş ekle</h1>
+        <div class="flex justify-center mb-8">
+            <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Keskulla Adı veya Email Girin"
+                class="w-full max-w-md p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
+                v-for="user in filteredUsers"
+                :key="user.id"
+                class="p-6 border rounded-lg shadow-md bg-white flex flex-col items-center"
+            >
+                <div class="relative w-24 h-24 mb-4">
+                    <div
+                        v-if="!user.avatar"
+                        class="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-semibold text-white"
+                    >
+                        {{ getInitials(user.name, user.surname) }}
                     </div>
-                    <div>
-                        <p class="font-semibold">{{ user.name }} {{user.surname}}</p>
-                        <p class="text-sm text-gray-600">{{ user.email }}</p>
-                    </div>
+                    <img v-else :src="user.avatar" alt="avatar" class="w-24 h-24 rounded-full object-cover" />
                 </div>
-                <button @click="addFriend(user.id)" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none">Add Friend</button>
+                <div class="text-center">
+                    <p class="font-semibold text-lg">{{ user.name }} {{ user.surname }}</p>
+                    <p class="text-gray-600">{{ user.email }}</p>
+                </div>
+                <button
+                    @click="addFriend(user.id)"
+                    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition-colors"
+                >
+                    Add Friend
+                </button>
             </div>
         </div>
     </div>
@@ -25,8 +43,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
-import {useStore} from "vuex";
-import Header from "./Header.vue";
+import { useStore } from 'vuex';
+import Header from './Header.vue';
 const store = useStore();
 import { useToast } from 'vue-toastification';
 
@@ -58,17 +76,18 @@ const getFriends = async () => {
 const addFriend = async (userId) => {
     try {
         await axios.post('/api/friends', { friend_id: userId });
-        toast.success('Kullanıcı Başarıyla eklendi');
+        toast.success('Kullanıcı başarıyla eklendi');
         getFriends();
     } catch (error) {
-        toast.error('Kullanıcı Eklenemedi');
+        toast.error('Kullanıcı eklenemedi');
+        console.error('Error adding friend:', error);
     }
 };
 
 const filteredUsers = computed(() => {
     const friendIds = friends.value.map(friend => friend.id);
     if (!searchQuery.value.trim()) {
-        return users.value.filter(user => user.id !== currentUser.value.id && !friendIds.includes(user.id));
+        return [];
     }
     const searchTerm = searchQuery.value.toLowerCase();
     return users.value.filter(user =>
@@ -84,13 +103,7 @@ const getInitials = (name, surname) => {
     return nameInitial + surnameInitial;
 };
 
-const getRandomColor = (seed) => {
-    const colors = [
-        '#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FF33F0',
-        '#F0FF33', '#FF333F', '#33FFF0', '#33F0FF', '#5733FF'
-    ];
-    return colors[seed % colors.length];
-};
+
 
 onMounted(() => {
     getAllUsers();

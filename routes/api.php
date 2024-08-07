@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Friend routes
     Route::get('/friends', [FriendController::class, 'getFriends']);
+    Route::get('/friends/messaged', [FriendController::class, 'getMessagedFriends']);
     Route::post('/friends', [FriendController::class, 'createFriend']);
     Route::delete('/friends/{id}', [FriendController::class, 'deleteFriend']);
 

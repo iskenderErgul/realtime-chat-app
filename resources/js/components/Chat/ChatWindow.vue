@@ -62,9 +62,17 @@
             </div>
 
 
-            <div class="bg-gray-300 px-4 py-2 flex items-center">
-                <input v-model="newMessage" type="text"  @keyup.enter="sendMessage"  placeholder="Mesajınızı girin..." class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400">
-                <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Gönder</button>
+            <div class="bg-gray-300 px-4 py-2 flex items-center border-t border-gray-400">
+                <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300">
+                    <font-awesome-icon :icon="['fas', 'paperclip']" class="text-lg"/>
+                </button>
+                <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 ml-2">
+                    <font-awesome-icon :icon="['fas', 'microphone']" class="text-lg"/>
+                </button>
+                <input v-model="newMessage" type="text" @keyup.enter="sendMessage" placeholder="Mesajınızı girin..." class="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring focus:border-blue-400 ml-2">
+                <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">
+                    <font-awesome-icon :icon="['fas', 'paper-plane']" class="text-lg"/>
+                </button>
             </div>
         </div>
 
