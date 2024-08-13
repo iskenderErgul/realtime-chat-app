@@ -31,6 +31,7 @@ class FriendRepository  implements FriendRepositoryInterface
 
         $messagedFriendIds = $messagedFriends->pluck('sender_id')->merge($messagedFriends->pluck('receiver_id'))->unique();
 
+
         $friends = Friend::where('user_id', $user->id)
             ->whereIn('friend_id', $messagedFriendIds)
             ->with('friend')

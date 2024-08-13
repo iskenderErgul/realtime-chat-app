@@ -113,6 +113,7 @@ const store = useStore();
 const router = useRouter();
 const searchQuery = ref('');
 const friends = ref([]);
+const allFriends = ref([]);
 const groups = ref([]);
 const emit = defineEmits(['userSelected','groupSelected']);
 
@@ -125,15 +126,24 @@ const user = computed(() => store.getters.user);
 const toast = useToast();
 
 onMounted(() => {
-    getFriends();
+    getMessagedFriends();
     getGroups();
+    getAllFriends();
 });
 
-const getFriends = async () => {
+const getMessagedFriends = async () => {
     try {
         const response = await axios.get('/api/friends/messaged');
-        console.log(response)
         friends.value = response.data;
+    } catch (error) {
+        console.error('Error fetching friends:', error);
+    }
+};
+
+const getAllFriends = async () => {
+    try {
+        const response = await axios.get('/api/friends');
+        allFriends.value=response.data
     } catch (error) {
         console.error('Error fetching friends:', error);
     }
