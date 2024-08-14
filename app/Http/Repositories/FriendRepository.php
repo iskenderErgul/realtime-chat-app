@@ -16,6 +16,19 @@ class FriendRepository  implements FriendRepositoryInterface
         $user = Auth::user();
         $friends = $user->friends()->with('friend')->get();
 
+        foreach ($friends as $friend) {
+            $lastMessage = ChatMessage::where(function ($query) use ($user, $friend) {
+                $query->where('sender_id', $user->id)
+                    ->where('receiver_id', $friend->friend_id);
+            })->orWhere(function ($query) use ($user, $friend) {
+                $query->where('receiver_id', $user->id)
+                    ->where('sender_id', $friend->friend_id);
+            })->latest('created_at')->first();
+
+            $friend->last_message = $lastMessage ? $lastMessage->message : 'Mesaj Yok';
+            $friend->last_message_sender_id = $lastMessage ? $lastMessage->sender_id : null;
+        }
+
         return response()->json($friends);
     }
 
@@ -47,7 +60,7 @@ class FriendRepository  implements FriendRepositoryInterface
             })->latest('created_at')->first();
 
             $friend->last_message = $lastMessage ? $lastMessage->message : 'No messages yet';
-            $friend->last_message_sender_id = $lastMessage ? $lastMessage->sender_id : null; // Eklenen satır
+            $friend->last_message_sender_id = $lastMessage ? $lastMessage->sender_id : null;
         }
 
         return response()->json($friends);

@@ -143,7 +143,10 @@ const getMessagedFriends = async () => {
 const getAllFriends = async () => {
     try {
         const response = await axios.get('/api/friends');
-        allFriends.value=response.data
+        allFriends.value = response.data;
+
+        friends.value = allFriends.value;
+
     } catch (error) {
         console.error('Error fetching friends:', error);
     }
@@ -151,7 +154,7 @@ const getAllFriends = async () => {
 
 const formatLastMessage = (message, senderId) => {
     if (!message) return '';
-    const userId = store.getters.user.id; // mevcut kullanıcı ID'sini al
+    const userId = store.getters.user.id;
     const senderLabel = senderId === userId ? 'Siz: ' : '';
     return senderLabel + message;
 };
@@ -165,7 +168,7 @@ const getGroups = async () => {
 };
 
 const filteredFriends = computed(() => {
-    if (!searchQuery.value) return friends.value;
+    if (!searchQuery.value) return allFriends.value;
     const query = searchQuery.value.toLowerCase();
     return friends.value.filter(friendItem => {
         const name = `${friendItem.friend.name} ${friendItem.friend.surname}`.toLowerCase();

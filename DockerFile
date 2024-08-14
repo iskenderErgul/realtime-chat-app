@@ -38,4 +38,4 @@ USER www-data
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD [ "php", "artisan", "reverb:start", "--host=0.0.0.0" ]
