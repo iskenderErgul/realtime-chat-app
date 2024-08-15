@@ -50,18 +50,19 @@ services:
         networks:
             - app-network
 
-#    reverb:
-#        build:
-#            context: .
-#            dockerfile: reverb/Dockerfile
-#        container_name: reverb
-#        ports:
-#            - "8080:8080"
-#        volumes:
-#            - app-data:/var/www/html
-#        working_dir: /var/www/html
-#        networks:
-#            - app-network  # Burada 'network' yerine 'app-network' kullanılmalı
+    reverb:
+        build:
+            context: .
+            dockerfile: reverb/Dockerfile
+        container_name: reverb
+        ports:
+            - "8080:8080"
+#            - "6001:6001"
+        volumes:
+            - app-data:/var/www/html
+        working_dir: /var/www/html
+        networks:
+            - app-network
 
 networks:
     app-network:
