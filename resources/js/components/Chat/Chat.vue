@@ -8,8 +8,8 @@
 
         <div class="grid grid-cols-[1fr,4fr] h-full  ">
 
-            <div class="min-w-[200px] overflow-y-auto  bg-gray-200">
-                <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser" @groupSelected="setSelectedGroup"/>
+            <div class="min-w-[200px] overflow-y-auto  bg-gray-100">
+                <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser" @groupSelected="setSelectedGroup" />
             </div>
 
             <!-- Chat Window -->

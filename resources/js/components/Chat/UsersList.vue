@@ -1,13 +1,13 @@
 <template>
-    <div class="mt-[81px] lg:container mx-auto">
-        <div class="gap-4 pr-1">
-            <div class="bg-white shadow-md pt-2">
+    <div class="mt-[80px] lg:container mx-auto border-r border-black ">
+        <div class="gap-4 bg-gray-100 ">
+            <div class=" shadow-md pt-2">
                 <div class="flex pl-2">
                     <input
                         v-model="searchQuery"
                         type="text"
                         placeholder="Aratın veya yeni bir sohbet başlatın"
-                        class="w-full p-2 rounded-md border-b border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4"
+                        class="w-full p-2 rounded-md border-b border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4 bg-gray-100 text-black"
                     >
                     <div class="relative inline-block text-left group mt-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bi bi-three-dots-vertical w-6 h-6">
