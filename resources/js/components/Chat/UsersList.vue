@@ -6,7 +6,7 @@
                     <input
                         v-model="searchQuery"
                         type="text"
-                        placeholder="Search"
+                        placeholder="Aratın veya yeni bir sohbet başlatın"
                         class="w-full p-2 rounded-md border-b border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4"
                     >
                     <div class="relative inline-block text-left group mt-3">
@@ -31,7 +31,7 @@
                             @click="selectUser(friendItem.friend.id)"
                             class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
                         >
-                            <div  class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center">
+                            <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center">
                                 <span class="text-xl font-semibold" v-if="!friendItem.friend.avatar">{{ getInitials(friendItem.friend.name, friendItem.friend.surname) }}</span>
                                 <img v-else :src="friendItem.friend.avatar" alt="avatar" class="w-12 h-12 rounded-full">
                             </div>
@@ -40,7 +40,6 @@
                                 <p class="text-gray-600 text-sm">
                                     {{ formatLastMessage(friendItem.last_message, friendItem.last_message_sender_id) }}
                                 </p>
-
                             </div>
                         </div>
                     </div>
@@ -53,7 +52,7 @@
                             class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
                             v-tooltip="group.name"
                         >
-                            <div  class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center"  >
+                            <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center">
                                 <span class="text-xl font-semibold " v-if="!group.avatar">{{ getGroupInitials(group.name) }}</span>
                                 <img v-else :src="group.avatar" alt="avatar" class="w-12 h-12 rounded-full">
                             </div>
@@ -86,7 +85,7 @@
                         </li>
                     </ul>
                     <div class="mt-2">
-                        <button v-for="friend in friends" :key="friend.id" type="button" @click="addMember(friend.friend)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">{{ friend.friend.name }} {{ friend.friend.surname }}</button>
+                        <button v-for="friend in messagedFriends" :key="friend.friend.id" type="button" @click="addMember(friend.friend)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">{{ friend.friend.name }} {{ friend.friend.surname }}</button>
                     </div>
                 </div>
                 <div class="flex justify-end">
@@ -103,7 +102,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, computed} from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from "axios";
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
@@ -112,10 +111,9 @@ import { useToast } from 'vue-toastification';
 const store = useStore();
 const router = useRouter();
 const searchQuery = ref('');
-const friends = ref([]);
-const allFriends = ref([]);
+const messagedFriends = ref([]);
 const groups = ref([]);
-const emit = defineEmits(['userSelected','groupSelected']);
+const emit = defineEmits(['userSelected', 'groupSelected']);
 
 const showAddGroupModal = ref(false);
 const groupName = ref('');
@@ -126,27 +124,14 @@ const user = computed(() => store.getters.user);
 const toast = useToast();
 
 onMounted(() => {
-    getMessagedFriends();
     getGroups();
-    getAllFriends();
+    getMessagedFriends();
 });
 
 const getMessagedFriends = async () => {
     try {
         const response = await axios.get('/api/friends/messaged');
-        friends.value = response.data;
-    } catch (error) {
-        console.error('Error fetching friends:', error);
-    }
-};
-
-const getAllFriends = async () => {
-    try {
-        const response = await axios.get('/api/friends');
-        allFriends.value = response.data;
-
-        friends.value = allFriends.value;
-
+        messagedFriends.value = response.data;
     } catch (error) {
         console.error('Error fetching friends:', error);
     }
@@ -158,6 +143,7 @@ const formatLastMessage = (message, senderId) => {
     const senderLabel = senderId === userId ? 'Siz: ' : '';
     return senderLabel + message;
 };
+
 const getGroups = async () => {
     try {
         const response = await axios.get('/api/groups');
@@ -168,9 +154,9 @@ const getGroups = async () => {
 };
 
 const filteredFriends = computed(() => {
-    if (!searchQuery.value) return allFriends.value;
+    if (!searchQuery.value) return messagedFriends.value;
     const query = searchQuery.value.toLowerCase();
-    return friends.value.filter(friendItem => {
+    return messagedFriends.value.filter(friendItem => {
         const name = `${friendItem.friend.name} ${friendItem.friend.surname}`.toLowerCase();
         return name.includes(query);
     });
@@ -192,71 +178,57 @@ const goToProfile = async (userId) => {
     await router.push({ name: 'userProfile', params: { userId } });
 };
 
-const selectUser = (userId) => {
-    emit('userSelected', userId);
-};
-
-const selectGroup = (groupId) => {
-    emit('groupSelected',groupId);
-};
-
-const getInitials = (name, surname) => {
-    const nameInitial = name ? name.charAt(0).toUpperCase() : '';
-    const surnameInitial = surname ? surname.charAt(0).toUpperCase() : '';
-    return nameInitial + surnameInitial;
-};
-
-const getGroupInitials = (name) => {
-    const words = name.split(' ');
-    let initials = '';
-    words.forEach(word => {
-        if (word.length > 0) {
-            initials += word.charAt(0).toUpperCase();
-        }
-    });
-    return initials;
-};
-
 const openAddGroupModal = () => {
     showAddGroupModal.value = true;
 };
 
 const closeModal = () => {
     showAddGroupModal.value = false;
-    groupName.value = '';
-    groupDescription.value = '';
-    selectedMembers.value = [];
+};
+
+const selectUser = (userId) => {
+    emit('userSelected', userId);
+};
+
+const selectGroup = (groupId) => {
+    emit('groupSelected', groupId);
+};
+
+const getInitials = (name, surname) => {
+    const initials = (name[0] || '') + (surname[0] || '');
+    return initials.toUpperCase();
+};
+
+const getGroupInitials = (name) => {
+    const initials = name.split(' ').map(word => word[0]).join('');
+    return initials.toUpperCase();
+};
+
+const getTruncatedGroupName = (name) => {
+    return name.length > 20 ? name.slice(0, 20) + '...' : name;
+};
+
+const addMember = (member) => {
+    if (!selectedMembers.value.find(m => m.id === member.id)) {
+        selectedMembers.value.push(member);
+    }
+};
+
+const removeMember = (id) => {
+    selectedMembers.value = selectedMembers.value.filter(member => member.id !== id);
 };
 
 const createGroup = async () => {
     try {
-        const response = await axios.post('/api/groups', {
+        await axios.post('/api/groups', {
             name: groupName.value,
             description: groupDescription.value,
             members: selectedMembers.value.map(member => member.id)
         });
-        getGroups();
+        toast.success('Grup başarıyla oluşturuldu.');
         closeModal();
-        toast.success('Grup Başarıyla Oluşturuldu');
     } catch (error) {
-        toast.error('Grup Oluşturulamadı');
+        toast.error('Grup oluşturulurken bir hata oluştu.');
     }
-};
-
-const getTruncatedGroupName = (name) => {
-    if (name.length > 20) {
-        return name.slice(0, 20) + '...';
-    }
-    return name;
-};
-
-const addMember = (friend) => {
-    if (!selectedMembers.value.some(member => member.id === friend.id)) {
-        selectedMembers.value.push(friend);
-    }
-};
-
-const removeMember = memberId => {
-    selectedMembers.value = selectedMembers.value.filter(member => member.id !== memberId);
 };
 </script>
