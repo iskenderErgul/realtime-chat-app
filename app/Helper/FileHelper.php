@@ -21,6 +21,6 @@ class FileHelper
             return 'video';
         }
 
-        return 'text'; // Varsayılan olarak 'text' tipi
+        return 'text';
     }
 }

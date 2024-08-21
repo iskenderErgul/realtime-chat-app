@@ -3,7 +3,7 @@
         <div class="w-full max-w-md">
             <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 shadow-custom">
                 <div class="text-center mb-10">
-                    <div class="text-gray-900 text-3xl font-medium ">
+                    <div class="text-gray-900 text-3xl font-medium">
                         <img src="../../../../public/image/0a29b111-f86f-4c98-a56e-1c0c6cc2881f.png" class="mx-auto">
                     </div>
                 </div>
@@ -63,6 +63,8 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import { useReCaptcha } from 'vue-recaptcha-v3';
+
 const toast = useToast();
 const router = useRouter();
 const user = ref({
@@ -71,13 +73,20 @@ const user = ref({
     password: null,
 });
 
+const { executeRecaptcha } = useReCaptcha();
+
 const register = async () => {
     try {
-        const response = await axios.post('/api/register', user.value);
+        const token = await executeRecaptcha('register');
+        const response = await axios.post('/api/register', {
+            ...user.value,
+            'g-recaptcha-response': token,
+        });
+
         toast.success(response.data.message);
-        await router.push({name: 'login'});
+        await router.push({ name: 'login' });
     } catch (error) {
-        toast.success(response.data.message);
+        toast.error('Kayıt başarısız. Lütfen tekrar deneyin.');
     }
 };
 
@@ -85,6 +94,7 @@ const goToLogin = () => {
     router.push({ name: 'login' });
 };
 </script>
+
 <style>
 .shadow-custom {
     box-shadow: 0 -4px 6px -1px rgba(0, 179, 215, 0.5), 4px 0 6px -1px rgba(0, 179, 215, 0.5), -4px 0 6px -1px rgba(0, 179, 215, 0.5);
