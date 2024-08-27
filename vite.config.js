@@ -22,9 +22,4 @@ export default defineConfig({
             vue: 'vue/dist/vue.esm-bundler.js',
         },
     },
-    define: {
-        'process.env': {
-            RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
-        },
-    },
 });

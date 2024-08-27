@@ -12,7 +12,7 @@
 
     <div id="app">
         <app></app>
-        <div class="g-recaptcha" data-sitekey="{{ config('services.captcha.sitekey') }}"></div>
+
     </div>
 
 

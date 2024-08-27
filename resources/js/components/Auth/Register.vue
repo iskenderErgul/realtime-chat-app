@@ -42,7 +42,7 @@
                     />
                 </div>
 
-                <div class="mb-6">
+                <div class="mb-6 block">
                     <Recaptcha :siteKey="recaptchaSiteKey" />
                 </div>
 
@@ -63,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
@@ -76,7 +76,8 @@ const user = ref({
     email: null,
     password: null,
 });
-const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const recaptchaSiteKey = ref('6LdCIzAqAAAAAA8lWudpGTbzkYfb7a5G93kkeD28');
+
 
 const register = async () => {
     const recaptchaResponse  = grecaptcha.getResponse();
