@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
 
         <title>Laravel</title>
         @vite('resources/css/app.css')
@@ -11,7 +12,10 @@
 
     <div id="app">
         <app></app>
+        <div class="g-recaptcha" data-sitekey="{{ config('services.captcha.sitekey') }}"></div>
     </div>
+
+
 
 
     @vite('resources/js/app.js')
