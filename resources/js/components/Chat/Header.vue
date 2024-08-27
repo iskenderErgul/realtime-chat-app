@@ -43,7 +43,7 @@ import {computed} from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 
-const store = useStore();
+    const store = useStore();
 const router = useRouter();
 const route = useRoute();
 

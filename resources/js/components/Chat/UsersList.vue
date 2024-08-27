@@ -125,10 +125,10 @@ const toast = useToast();
 
 onMounted(() => {
     getGroups();
-    getMessagedFriends();
+    getFriendsWithLastMessage();
 });
 
-const getMessagedFriends = async () => {
+const getFriendsWithLastMessage = async () => {
     try {
         const response = await axios.get('/api/friends/messaged');
         messagedFriends.value = response.data;
