@@ -30,11 +30,27 @@
             <!-- Chat Messages -->
             <div class="flex-1 overflow-y-auto bg-gray-100 p-4">
                 <div v-for="message in filteredMessages" :key="message.id" class="mb-4">
+                    <!-- Kendi mesajınız -->
                     <div v-if="message.sender_id === currentUser.id" class="flex items-end justify-end">
-                        <div class="bg-green-500 p-2 rounded-md">
-                            <p class="text-white" :data-tooltip="formatDate(message.updated_at)"
-                               v-tooltip="formatDate(message.updated_at)">{{ message.message }}</p>
+                        <div v-if="message.type === 'unknown'" class="bg-green-200 p-2 rounded-md">
+                            <div v-if="message.file_path" class="mb-1">
+                                <!-- Resmi Göster -->
+                                <img :src="`/storage/${message.file_path}`" alt="Message Attachment" class="max-w-xs h-auto rounded-md object-cover"/>
+                            </div>
+                            <div v-if="message.message">
+                                <!-- Mesajı Göster -->
+                                <p class="text-black">{{ message.message }}</p>
+                            </div>
                         </div>
+                        <div v-else-if="message.type === 'image'" class="bg-green-500 p-2 rounded-md">
+                            <!-- Resmi Göster -->
+                            <img :src="`/storage/${message.file_path}`" alt="Message Image" class="max-w-xs h-auto rounded-md object-cover"/>
+                        </div>
+                        <div v-else-if="message.type === 'text'" class="bg-green-500 p-2 rounded-md">
+                            <!-- Sadece metni Göster -->
+                            <p class="text-white">{{ message.message }}</p>
+                        </div>
+                        <!-- Avatar -->
                         <template v-if="currentUser.avatar">
                             <img :src="currentUser.avatar" alt="Avatar" class="rounded-full ml-2" width="35">
                         </template>
@@ -44,6 +60,7 @@
                             </div>
                         </template>
                     </div>
+                    <!-- Karşı tarafın mesajı -->
                     <div v-else class="flex items-start">
                         <template v-if="selectedUser.avatar">
                             <img :src="selectedUser.avatar" alt="Avatar" class="rounded-full mr-2" width="35">
@@ -53,27 +70,54 @@
                                 <span class="font-semibold text-sm text-gray-600">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
                             </div>
                         </template>
-                        <div class="bg-blue-500 p-2 rounded-md">
-                            <p class="text-white" :data-tooltip="formatDate(message.updated_at)"
-                               v-tooltip="formatDate(message.updated_at)">{{ message.message }}</p>
+                        <div v-if="message.type === 'unknown'" class="bg-blue-200 p-2 rounded-md">
+                            <div v-if="message.file_path" class="mb-1">
+                                <!-- Resmi Göster -->
+                                <img :src="`/storage/${message.file_path}`" alt="Message Attachment" class="max-w-xs h-auto rounded-md object-cover"/>
+                            </div>
+                            <div v-if="message.message">
+                                <!-- Mesajı Göster -->
+                                <p class="text-black">{{ message.message }}</p>
+                            </div>
+                        </div>
+                        <div v-else-if="message.type === 'image'" class="bg-blue-500 p-2 rounded-md">
+                            <!-- Resmi Göster -->
+                            <img :src="`/storage/${message.file_path}`" alt="Message Image" class="max-w-xs h-auto rounded-md object-cover"/>
+                        </div>
+                        <div v-else-if="message.type === 'text'" class="bg-blue-500 p-2 rounded-md">
+                            <!-- Sadece metni Göster -->
+                            <p class="text-white">{{ message.message }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
 
+            <!-- Input Area -->
             <div class="bg-gray-300 px-4 py-2 flex items-center border-t border-gray-400">
-                <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300">
+                <!-- File Upload Button -->
+                <label for="file-upload" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer">
                     <font-awesome-icon :icon="['fas', 'paperclip']" class="text-lg"/>
-                </button>
+                    <input id="file-upload" type="file" @change="handleFileSelection" class="hidden"/>
+                </label>
+
+                <!-- File Name Display -->
+                <p v-if="fileName" class="ml-2 text-gray-700">{{ fileName }}</p>
+
+                <!-- Microphone Button -->
                 <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 ml-2">
                     <font-awesome-icon :icon="['fas', 'microphone']" class="text-lg"/>
                 </button>
+
+                <!-- Message Input -->
                 <input v-model="newMessage" type="text" @keyup.enter="sendMessage" placeholder="Mesajınızı girin..." class="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring focus:border-blue-400 ml-2">
+
+                <!-- Send Button -->
                 <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">
                     <font-awesome-icon :icon="['fas', 'paper-plane']" class="text-lg"/>
                 </button>
             </div>
+
         </div>
 
 
@@ -86,15 +130,15 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref, watchEffect} from 'vue';
-import axios from "axios";
+import { computed, onMounted, ref } from 'vue';
+import axios from 'axios';
 import Echo from 'laravel-echo';
-
 import Pusher from 'pusher-js';
-import router from "@/router/router.js";
+import router from '@/router/router.js';
+
 window.Pusher = Pusher;
 
-const echo= new Echo({
+const echo = new Echo({
     broadcaster: 'reverb',
     key: import.meta.env.VITE_REVERB_APP_KEY,
     wsHost: import.meta.env.VITE_REVERB_HOST,
@@ -104,11 +148,9 @@ const echo= new Echo({
     enabledTransports: ['ws', 'wss'],
 });
 
-
 const props = defineProps({
     currentUser: Object,
     selectedUserId: Number,
-
     users: Array,
 });
 
@@ -118,11 +160,12 @@ const selectedUser = computed(() => {
 
 const newMessage = ref('');
 const messages = ref([]);
-
+const file = ref(null);
+const fileName = ref('');
 
 const fetchMessages = async (userId) => {
     try {
-        const response = await axios.post("/api/messages", { id: userId });
+        const response = await axios.post('/api/messages', { id: userId });
         messages.value = response.data;
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -143,68 +186,61 @@ onMounted(() => {
             console.log(e);
             messages.value.push(e.message);
         });
-
 });
 
 const sendMessage = async () => {
-    if (newMessage.value.trim() !== '') {
+    if (newMessage.value.trim() !== '' || file.value) {
+        const formData = new FormData();
+        formData.append('sender_id', props.currentUser.id);
+        formData.append('receiver_id', selectedUser.value.id);
+        formData.append('message', newMessage.value);
+        if (file.value) {
+            formData.append('file', file.value);
+        }
+
         try {
-            const response = await axios.post("/api/messages/send", {
-                sender_id: props.currentUser.id,
-                receiver_id: selectedUser.value.id,
-                message: newMessage.value
+            const response = await axios.post('/api/messages/send', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
+            console.log(response.data);
             messages.value.push(response.data);
             newMessage.value = '';
+            file.value = null;
+            fileName.value = '';
+            console.log(response);
         } catch (error) {
             console.error('Error sending message:', error);
         }
     }
 };
 
-const clearChat = async () => {
-    try {
-        await axios.delete("/api/messages/clear", {
-            params: {
-                sender_id: props.currentUser.id,
-                receiver_id: selectedUser.value.id
-            }
-        });
-        messages.value = [];
-        chatClose();
-    } catch (error) {
-        console.error('Error clearing chat:', error);
+const handleFileSelection = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+        file.value = selectedFile;
+        fileName.value = selectedFile.name;
     }
 };
 
-const closeChatWindow = ()  =>  {
-    router.push('/chat');
-    setTimeout(() => {
-        window.location.reload();
-
-    },200)
-}
-
 const getInitials = (name, surname) => {
-    const nameInitial = name ? name.charAt(0).toUpperCase() : '';
-    const surnameInitial = surname ? surname.charAt(0).toUpperCase() : '';
-    return nameInitial + surnameInitial;
+    return (name[0] + (surname ? surname[0] : '')).toUpperCase();
 };
 
-const formatDate = (dateString) => {
-    const options = {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+const formatDate = (date) => {
+    return new Date(date).toLocaleTimeString();
+};
 
-    };
+const closeChatWindow = () => {
+    router.push('/');
+};
 
-
-    const date = new Date(dateString);
-    return date.toLocaleDateString('tr-TR', options);
+const clearChat = () => {
+    messages.value = [];
 };
 </script>
 
+<style scoped>
+/* Stil tanımları buraya eklenecek */
+</style>

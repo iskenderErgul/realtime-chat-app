@@ -2,6 +2,8 @@
 
 namespace App\Http\Repositories;
 use App\Events\MessageSent;
+use App\Helpers\FileUploadHelper;
+use App\Helpers\MessageTypeHelper;
 use App\Http\Requests\Messages\ClearMessagesRequest;
 use App\Http\Requests\Messages\GetMessagesRequest;
 use App\Http\Requests\Messages\SendMessagesRequest;
@@ -26,11 +28,22 @@ class MessageRepository implements MessageRepositoryInterface
 
     public function sendMessage(SendMessagesRequest $request)
     {
-        $message= ChatMessage::create([
-            "sender_id" => $request->sender_id,
-            "receiver_id" => $request->receiver_id,
-            "message" => $request->message
-        ]);
+        $messageData = [
+            'sender_id' => $request->sender_id,
+            'receiver_id' => $request->receiver_id,
+        ];
+
+        if ($request->filled('message') || $request->hasFile('file')) {
+            $messageData['message'] = $request->message;
+            if ($request->hasFile('file')) {
+                $filePath = FileUploadHelper::upload($request->file('file'));
+                $messageData['file_path'] = $filePath;
+            }
+            $messageData['type'] = MessageTypeHelper::determineMessageType($request->message, $request->file('file'));
+        }
+
+        $message = ChatMessage::create($messageData);
+
         broadcast(new MessageSent($message))->toOthers();
 
         return $message;

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('receiver_id');
             $table->foreignId('sender_id');
             $table->string('message');
-            $table->enum('type', ['text', 'image', 'audio', 'video'])->default('text');
+            $table->enum('type', ['text', 'image', 'audio', 'video','unknown'])->default('text');
             $table->string('file_path')->nullable();
             $table->timestamps();
         });
