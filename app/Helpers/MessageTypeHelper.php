@@ -9,7 +9,7 @@ class MessageTypeHelper
     public static function getMessageType($messageContent, $file = null)
     {
         if ($file instanceof UploadedFile) {
-            // Dosya türünü belirleyin
+
             $extension = $file->getClientOriginalExtension();
             if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
                 return 'image';
@@ -29,10 +29,6 @@ class MessageTypeHelper
 
     public static function determineMessageType($messageContent, $file = null)
     {
-        if ($messageContent && $file) {
-            return 'unknown'; // Hem mesaj hem de dosya varsa 'unknown'
-        }
-
         return self::getMessageType($messageContent, $file);
     }
 }

@@ -25,7 +25,7 @@ class SendMessagesRequest extends FormRequest
             'sender_id' => 'required|integer|exists:users,id',
             'receiver_id' => 'required|integer|exists:users,id',
             'message' => 'nullable|string|max:1000',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,mp4,avi,mov|max:51200', // Dosya türleri ve boyut sınırı (örnek)
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,mp4,avi,mov,mp3,wav|max:51200', // Dosya türleri ve boyut sınırı
 
         ];
     }
