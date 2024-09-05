@@ -30,25 +30,63 @@
             <!-- Chat Messages -->
             <div class="flex-1 overflow-y-auto bg-gray-100 p-4">
                 <div v-for="message in filteredMessages" :key="message.id" class="mb-4">
-                    <!-- Kendi mesajınız -->
                     <div v-if="message.sender_id === currentUser.id" class="flex items-end justify-end">
-                        <div v-if="message.type === 'unknown'" class="bg-green-200 p-2 rounded-md">
-                            <div v-if="message.file_path" class="mb-1">
-                                <!-- Resmi Göster -->
-                                <img :src="`/storage/${message.file_path}`" alt="Message Attachment" class="max-w-xs h-auto rounded-md object-cover"/>
+                        <div class="flex flex-col items-end">
+                            <div v-if="message.type === 'unknown'" class="bg-green-200 p-2 rounded-md max-w-xs">
+                                <div v-if="message.file_path" class="mb-1">
+                                    <template v-if="message.file_path.endsWith('.mp3') || message.file_path.endsWith('.wav')">
+                                        <div class="audio-player-container">
+                                            <audio controls class="audio-player">
+                                                <source :src="`/storage/${message.file_path}`" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                            <p class="audio-file-name">{{ getFileName(message.file_path) }}</p>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="message.file_path.endsWith('.jpg') || message.file_path.endsWith('.png')">
+                                        <img :src="`/storage/${message.file_path}`" alt="Message Attachment" class="max-w-xs h-auto rounded-md object-cover"/>
+                                    </template>
+                                    <template v-else-if="message.file_path.endsWith('.mp4') || message.file_path.endsWith('.avi') || message.file_path.endsWith('.mov')">
+                                        <video controls class="w-full max-w-xs h-auto rounded-md">
+                                            <source :src="`/storage/${message.file_path}`" type="video/mp4">
+                                            Your browser does not support the video element.
+                                        </video>
+                                    </template>
+                                </div>
+                                <div v-if="message.message">
+                                    <p class="text-black mt-1">{{ message.message }}</p>
+                                </div>
                             </div>
-                            <div v-if="message.message">
-                                <!-- Mesajı Göster -->
-                                <p class="text-black">{{ message.message }}</p>
+                            <div v-else-if="message.type === 'image'" class="bg-green-500 p-2 rounded-md max-w-xs">
+                                <img :src="`/storage/${message.file_path}`" alt="Message Image" class="w-full h-auto rounded-md object-cover" @click="openImageModal(`/storage/${message.file_path}`)"/>
+                                <div v-if="message.message" class="mt-1">
+                                    <p class="text-white">{{ message.message }}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div v-else-if="message.type === 'image'" class="bg-green-500 p-2 rounded-md">
-                            <!-- Resmi Göster -->
-                            <img :src="`/storage/${message.file_path}`" alt="Message Image" class="max-w-xs h-auto rounded-md object-cover"/>
-                        </div>
-                        <div v-else-if="message.type === 'text'" class="bg-green-500 p-2 rounded-md">
-                            <!-- Sadece metni Göster -->
-                            <p class="text-white">{{ message.message }}</p>
+                            <div v-else-if="message.type === 'audio'" class="bg-green-200 p-2 rounded-md max-w-xs">
+                                <div class="audio-player-container">
+                                    <audio controls class="audio-player">
+                                        <source :src="`/storage/${message.file_path}`" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                    <p class="audio-file-name">{{ getFileName(message.file_path) }}</p>
+                                </div>
+                                <div v-if="message.message" class="mt-1">
+                                    <p class="text-black">{{ message.message }}</p>
+                                </div>
+                            </div>
+                            <div v-else-if="message.type === 'video'" class="bg-green-500 p-2 rounded-md max-w-xs">
+                                <video controls class="w-full max-w-xs h-auto rounded-md">
+                                    <source :src="`/storage/${message.file_path}`" type="video/mp4">
+                                    Your browser does not support the video element.
+                                </video>
+                                <div v-if="message.message" class="mt-1">
+                                    <p class="text-white">{{ message.message }}</p>
+                                </div>
+                            </div>
+                            <div v-else-if="message.type === 'text'" class="bg-green-500 p-2 rounded-md max-w-xs">
+                                <p class="text-white">{{ message.message }}</p>
+                            </div>
                         </div>
                         <!-- Avatar -->
                         <template v-if="currentUser.avatar">
@@ -60,7 +98,7 @@
                             </div>
                         </template>
                     </div>
-                    <!-- Karşı tarafın mesajı -->
+
                     <div v-else class="flex items-start">
                         <template v-if="selectedUser.avatar">
                             <img :src="selectedUser.avatar" alt="Avatar" class="rounded-full mr-2" width="35">
@@ -70,44 +108,80 @@
                                 <span class="font-semibold text-sm text-gray-600">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
                             </div>
                         </template>
-                        <div v-if="message.type === 'unknown'" class="bg-blue-200 p-2 rounded-md">
-                            <div v-if="message.file_path" class="mb-1">
-                                <!-- Resmi Göster -->
-                                <img :src="`/storage/${message.file_path}`" alt="Message Attachment" class="max-w-xs h-auto rounded-md object-cover"/>
+                        <div class="flex flex-col items-start">
+                            <div v-if="message.type === 'unknown'" class="bg-blue-200 p-2 rounded-md max-w-xs">
+                                <div v-if="message.file_path" class="mb-1">
+                                    <template v-if="message.file_path.endsWith('.mp3') || message.file_path.endsWith('.wav')">
+                                        <div class="audio-player-container">
+                                            <audio controls class="audio-player">
+                                                <source :src="`/storage/${message.file_path}`" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                            <p class="audio-file-name">{{ getFileName(message.file_path) }}</p>
+                                        </div>
+                                    </template>
+                                    <template v-else-if="message.file_path.endsWith('.jpg') || message.file_path.endsWith('.png')">
+                                        <img :src="`/storage/${message.file_path}`" alt="Message Attachment" class="max-w-xs h-auto rounded-md object-cover"/>
+                                    </template>
+                                    <template v-else-if="message.file_path.endsWith('.mp4') || message.file_path.endsWith('.avi') || message.file_path.endsWith('.mov')">
+                                        <video controls class="w-full max-w-xs h-auto rounded-md">
+                                            <source :src="`/storage/${message.file_path}`" type="video/mp4">
+                                            Your browser does not support the video element.
+                                        </video>
+                                    </template>
+                                </div>
+                                <div v-if="message.message" class="mt-1">
+                                    <p class="text-black">{{ message.message }}</p>
+                                </div>
                             </div>
-                            <div v-if="message.message">
-                                <!-- Mesajı Göster -->
-                                <p class="text-black">{{ message.message }}</p>
+                            <div v-else-if="message.type === 'image'" class="bg-blue-500 p-2 rounded-md max-w-xs">
+                                <img :src="`/storage/${message.file_path}`" alt="Message Image" class="w-full h-auto rounded-md object-cover" @click="openImageModal(`/storage/${message.file_path}`)"/>
+                                <div v-if="message.message" class="mt-1">
+                                    <p class="text-white">{{ message.message }}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div v-else-if="message.type === 'image'" class="bg-blue-500 p-2 rounded-md">
-                            <!-- Resmi Göster -->
-                            <img :src="`/storage/${message.file_path}`" alt="Message Image" class="max-w-xs h-auto rounded-md object-cover"/>
-                        </div>
-                        <div v-else-if="message.type === 'text'" class="bg-blue-500 p-2 rounded-md">
-                            <!-- Sadece metni Göster -->
-                            <p class="text-white">{{ message.message }}</p>
+                            <div v-else-if="message.type === 'audio'" class="bg-blue-200 p-2 rounded-md max-w-xs">
+                                <div class="audio-player-container">
+                                    <audio controls class="audio-player">
+                                        <source :src="`/storage/${message.file_path}`" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                    <p class="audio-file-name">{{ getFileName(message.file_path) }}</p>
+                                </div>
+                                <div v-if="message.message" class="mt-1">
+                                    <p class="text-black">{{ message.message }}</p>
+                                </div>
+                            </div>
+                            <div v-else-if="message.type === 'video'" class="bg-blue-500 p-2 rounded-md max-w-xs">
+                                <video controls class="w-full max-w-xs h-auto rounded-md">
+                                    <source :src="`/storage/${message.file_path}`" type="video/mp4">
+                                    Your browser does not support the video element.
+                                </video>
+                                <div v-if="message.message" class="mt-1">
+                                    <p class="text-white">{{ message.message }}</p>
+                                </div>
+                            </div>
+                            <div v-else-if="message.type === 'text'" class="bg-blue-500 p-2 rounded-md max-w-xs">
+                                <p class="text-white">{{ message.message }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
 
+
+
             <!-- Input Area -->
             <div class="bg-gray-300 px-4 py-2 flex items-center border-t border-gray-400">
-                <!-- File Upload Button -->
+
                 <label for="file-upload" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer">
                     <font-awesome-icon :icon="['fas', 'paperclip']" class="text-lg"/>
                     <input id="file-upload" type="file" @change="handleFileSelection" class="hidden"/>
                 </label>
 
-                <!-- File Name Display -->
-                <p v-if="fileName" class="ml-2 text-gray-700">{{ fileName }}</p>
 
-                <!-- Microphone Button -->
-                <button class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 ml-2">
-                    <font-awesome-icon :icon="['fas', 'microphone']" class="text-lg"/>
-                </button>
+                <p v-if="fileName" class="ml-2 text-gray-700">{{ fileName }}</p>
 
                 <!-- Message Input -->
                 <input v-model="newMessage" type="text" @keyup.enter="sendMessage" placeholder="Mesajınızı girin..." class="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring focus:border-blue-400 ml-2">
@@ -121,11 +195,15 @@
         </div>
 
 
+
+
         <div v-else class="flex flex-col items-center justify-center h-screen">
             <img src="https://picsum.photos/100" alt="" class="rounded-full">
             <p class="mt-2 text-2xl font-semibold">IMS CHAT APP</p>
             <p class="text-gray-600">Bir sohbet seç ve mesajlaşmaya başla</p>
         </div>
+
+        <FullScreenModal :imageSrc="currentImage" :isOpen="isModalOpen" @update:isOpen="isModalOpen = $event"/>
     </div>
 </template>
 
@@ -135,6 +213,7 @@ import axios from 'axios';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import router from '@/router/router.js';
+import FullScreenModal from './FullScreenModal.vue';
 
 window.Pusher = Pusher;
 
@@ -162,6 +241,13 @@ const newMessage = ref('');
 const messages = ref([]);
 const file = ref(null);
 const fileName = ref('');
+const isModalOpen = ref(false);
+const currentImage = ref('');
+
+const openImageModal = (imageSrc) => {
+    currentImage.value = imageSrc;
+    isModalOpen.value = true;
+};
 
 const fetchMessages = async (userId) => {
     try {
@@ -183,7 +269,7 @@ onMounted(() => {
 
     echo.channel(`chat.${props.currentUser.id}`)
         .listen('MessageSent', (e) => {
-            console.log(e);
+            console.log('Message received:', e.message);
             messages.value.push(e.message);
         });
 });
@@ -204,17 +290,20 @@ const sendMessage = async () => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log(response.data);
+            console.log('Message sent:', response.data);
             messages.value.push(response.data);
             newMessage.value = '';
             file.value = null;
             fileName.value = '';
-            console.log(response);
         } catch (error) {
             console.error('Error sending message:', error);
         }
     }
 };
+
+const getFileName = (filePath) => {
+    return filePath.split('/').pop();
+}
 
 const handleFileSelection = (event) => {
     const selectedFile = event.target.files[0];
@@ -242,5 +331,23 @@ const clearChat = () => {
 </script>
 
 <style scoped>
-/* Stil tanımları buraya eklenecek */
+.audio-player-container {
+    width: 100%; /* Full width to occupy the container */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the audio player horizontally */
+}
+
+.audio-player {
+    width: 100%; /* Full width to fit within the container */
+    max-width: 100%; /* Ensure it doesn't exceed container width */
+    height: 50px; /* Adjust the height as needed */
+}
+
+.audio-file-name {
+    margin-top: 8px; /* Space between player and file name */
+    font-size: 14px; /* Adjust font size */
+    color: #333; /* Text color */
+    text-align: center; /* Center align the text */
+}
 </style>
