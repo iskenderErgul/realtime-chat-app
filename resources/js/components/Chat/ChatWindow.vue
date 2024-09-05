@@ -214,6 +214,9 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import router from '@/router/router.js';
 import FullScreenModal from './FullScreenModal.vue';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 window.Pusher = Pusher;
 
@@ -326,8 +329,22 @@ const closeChatWindow = () => {
 };
 
 const clearChat = () => {
-    messages.value = [];
+    axios.delete('/api/messages/clear', {
+        params: {
+            sender_id: props.currentUser.id,
+            receiver_id: selectedUser.value.id
+        }
+    })
+        .then(response => {
+            messages.value = messages.value.filter(message => message.receiver_id !== selectedUser.value.id);
+            console.log(response);
+            toast.success('Sohbet Temizlendi');
+        })
+        .catch(error => {
+            toast.error('There was an error clearing the chat!', error);
+        });
 };
+
 </script>
 
 <style scoped>
