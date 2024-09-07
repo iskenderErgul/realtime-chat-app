@@ -293,7 +293,6 @@ const sendMessage = async () => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            console.log('Message sent:', response.data);
             messages.value.push(response.data);
             newMessage.value = '';
             file.value = null;
