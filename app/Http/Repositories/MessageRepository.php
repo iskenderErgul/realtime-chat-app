@@ -30,8 +30,8 @@ class MessageRepository implements MessageRepositoryInterface
     {
 
         $messageData = [
-            'sender_id' => $request->sender_id,
-            'receiver_id' => $request->receiver_id,
+            'sender_id' => (int)$request->sender_id,
+            'receiver_id' =>(int) $request->receiver_id,
         ];
 
         if ($request->filled('message') || $request->hasFile('file')) {
