@@ -44,12 +44,13 @@ class LoginController extends Controller
     public function register(Request $request): JsonResponse
     {
 
-        $recaptchaResponse = $request->input('g-recaptcha-response');
-        if (!$this->recaptcha->verify($recaptchaResponse)) {
-            return response()->json([
-                'message' => 'reCAPTCHA doğrulaması başarısız.'
-            ], 422);
-        }
+
+//        $recaptchaResponse = $request->input('g-recaptcha-response');
+//        if (!$this->recaptcha->verify($recaptchaResponse)) {
+//            return response()->json([
+//                'message' => 'reCAPTCHA doğrulaması başarısız.'
+//            ], 422);
+//        }
 
         $user = User::create([
             'name' => $request->name,

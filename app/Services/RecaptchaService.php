@@ -20,6 +20,7 @@ class RecaptchaService
             'secret'   => $this->secret,
             'response' => $recaptchaResponse,
         ]);
+        dd($response->json());
 
         $responseData = $response->json();
 

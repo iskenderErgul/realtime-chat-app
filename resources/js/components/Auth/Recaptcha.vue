@@ -29,6 +29,7 @@ const loadRecaptchaScript = () => {
 onMounted(() => {
     // `onloadCallback` fonksiyonunu global olarak tanımlayın
     window.onloadCallback = () => {
+        console.log('onloadCallback çalıştı ve tanımlandı!');
         if (window.grecaptcha && props.siteKey) {
             window.grecaptcha.render(recaptchaContainer.value, {
                 sitekey: props.siteKey

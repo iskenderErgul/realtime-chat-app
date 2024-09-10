@@ -85,7 +85,6 @@ const register = async () => {
         toast.error('Lütfen reCAPTCHA doğrulamasını tamamlayın.');
         return;
     }
-
     try {
         const response = await axios.post('/api/register', {
             ...user.value,
