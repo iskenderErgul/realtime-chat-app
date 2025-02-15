@@ -83,7 +83,11 @@ const goToRegister = () => {
                     </button>
 
                 </div>
+                <h1 class="text-center">Demo</h1>
+                <p class="text-center">Email : iskender1@gmail.com / 12345</p>
+                <p class="text-center">Email : mahmut@gmail.com / 12345</p>
             </form>
+
 
         </div>
     </div>
