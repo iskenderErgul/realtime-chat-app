@@ -171,6 +171,7 @@ const filteredGroups = computed(() => {
 });
 
 const goToAddFriend = async () => {
+    console.log('goToAddFriend çalıştı')
     await router.push({ name: 'AddFriend' });
 };
 
