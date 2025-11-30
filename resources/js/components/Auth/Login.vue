@@ -26,74 +26,101 @@ const goToRegister = () => {
 </script>
 
 <template>
-
-    <div class="flex items-center justify-center h-screen">
-
-        <div class="w-full max-w-md">
-            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 shadow-custom">
-                <div class="text-center mb-10">
-                    <div class="text-gray-900 text-3xl font-medium ">
-                        <img src="../../../../public/image/0a29b111-f86f-4c98-a56e-1c0c6cc2881f.png" class="mx-auto">
+    <div class="min-h-screen flex items-center justify-center p-4 bg-gradient-animated">
+        <div class="w-full max-w-md animate-fade-in">
+            <form class="glass-card rounded-3xl px-8 sm:px-10 pt-8 pb-10 shadow-2xl" @submit.prevent="login">
+                <!-- Logo/Header -->
+                <div class="text-center mb-8">
+                    <div class="mb-6">
+                        <img src="../../../../public/image/0a29b111-f86f-4c98-a56e-1c0c6cc2881f.png" class="mx-auto max-w-[180px] hover:scale-105 transition-transform duration-300">
                     </div>
+                    <h1 class="text-3xl font-bold text-gradient mb-2">Hoş Geldiniz</h1>
+                    <p class="text-gray-600">Hesabınıza giriş yapın</p>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                <!-- Email Input -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2" for="email">
                         Email
                     </label>
                     <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email"
+                        class="input-modern w-full px-4 py-3 rounded-xl focus:outline-none transition-all"
                         type="email"
-                        placeholder="Email"
+                        placeholder="ornek@email.com"
                         v-model="user.email"
-
-
+                        required
                     />
                 </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+
+                <!-- Password Input -->
+                <div class="mb-8">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2" for="password">
                         Şifre
                     </label>
                     <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="******************"
+                        id="password"
+                        class="input-modern w-full px-4 py-3 rounded-xl focus:outline-none transition-all"
+                        placeholder="••••••••••••"
                         type="password"
                         v-model="user.password"
-
+                        required
                     />
                 </div>
-                <div class="">
 
+                <!-- Buttons -->
+                <div class="space-y-3">
                     <button
-                        class="bg-[#00B3D7] hover:bg-[#0095B0] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline  block w-full mb-2"
-                        type="button"
-                        @click="login"
+                        class="btn-modern w-full bg-gradient-primary text-white font-bold py-3 px-6 rounded-xl focus:outline-none shadow-lg hover:shadow-xl"
+                        type="submit"
                         v-tooltip="'Giriş Yap'"
                     >
-                            Giriş Yap
+                        Giriş Yap
                     </button>
 
                     <button
-                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline   block w-full mb-2"
+                        class="btn-modern w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-3 px-6 rounded-xl focus:outline-none shadow-lg hover:shadow-xl"
                         type="button"
                         @click="goToRegister"
                         v-tooltip="'Kayıt Ol'"
                     >
                         Kayıt Ol
                     </button>
-
                 </div>
-                <h1 class="text-center">Demo</h1>
-                <p class="text-center">Email : iskender1@gmail.com / 12345</p>
-                <p class="text-center">Email : mahmut@gmail.com / 12345</p>
+
+                <!-- Demo Credentials -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h2 class="text-center font-semibold text-gray-700 mb-3">Demo Hesaplar</h2>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-center text-gray-600 bg-gray-50 py-2 px-3 rounded-lg">
+                            <span class="font-medium">Email:</span> iskender1@gmail.com / <span class="font-medium">Şifre:</span> 12345
+                        </p>
+                        <p class="text-center text-gray-600 bg-gray-50 py-2 px-3 rounded-lg">
+                            <span class="font-medium">Email:</span> mahmut@gmail.com / <span class="font-medium">Şifre:</span> 12345
+                        </p>
+                    </div>
+                </div>
             </form>
-
-
         </div>
     </div>
 </template>
-<style>
-.shadow-custom {
-    box-shadow: 0 -4px 6px -1px rgba(0, 179, 215, 0.5), 4px 0 6px -1px rgba(0, 179, 215, 0.5), -4px 0 6px -1px rgba(0, 179, 215, 0.5);
+
+<style scoped>
+.bg-gradient-animated {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 </style>

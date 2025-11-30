@@ -1,61 +1,84 @@
 <template>
-    <div class="flex items-center justify-center h-screen">
-        <div class="w-full max-w-md">
-            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 shadow-custom">
-                <div class="text-center mb-10">
-                    <div class="text-gray-900 text-3xl font-medium">
-                        <img src="../../../../public/image/0a29b111-f86f-4c98-a56e-1c0c6cc2881f.png" class="mx-auto">
+    <div class="min-h-screen flex items-center justify-center p-4 bg-gradient-animated">
+        <div class="w-full max-w-md animate-fade-in">
+            <form class="glass-card rounded-3xl px-8 sm:px-10 pt-8 pb-10 shadow-2xl" @submit.prevent="register">
+                <!-- Logo/Header -->
+                <div class="text-center mb-8">
+                    <div class="mb-6">
+                        <img src="../../../../public/image/0a29b111-f86f-4c98-a56e-1c0c6cc2881f.png" class="mx-auto max-w-[180px] hover:scale-105 transition-transform duration-300">
                     </div>
+                    <h1 class="text-3xl font-bold text-gradient mb-2">Kayıt Ol</h1>
+                    <p class="text-gray-600">Yeni hesap oluşturun</p>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                <!-- Name Input -->
+                <div class="mb-5">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2" for="name">
                         İsim
                     </label>
                     <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="name"
+                        class="input-modern w-full px-4 py-3 rounded-xl focus:outline-none transition-all"
                         type="text"
-                        placeholder="İsim"
+                        placeholder="Adınız"
                         v-model="user.name"
+                        required
                     />
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+
+                <!-- Email Input -->
+                <div class="mb-5">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2" for="email">
                         Email
                     </label>
                     <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email"
+                        class="input-modern w-full px-4 py-3 rounded-xl focus:outline-none transition-all"
                         type="email"
-                        placeholder="Email"
+                        placeholder="ornek@email.com"
                         v-model="user.email"
+                        required
                     />
                 </div>
+
+                <!-- Password Input -->
                 <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    <label class="block text-gray-700 text-sm font-semibold mb-2" for="password">
                         Şifre
                     </label>
                     <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password"
+                        class="input-modern w-full px-4 py-3 rounded-xl focus:outline-none transition-all"
                         type="password"
-                        placeholder="******************"
+                        placeholder="••••••••••••"
                         v-model="user.password"
+                        required
                     />
                 </div>
 
-                <div class="mb-6 block">
+                <!-- Recaptcha -->
+                <div class="mb-6">
                     <Recaptcha :siteKey="recaptchaSiteKey" />
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <p class="text-gray-500 mr-3">Zaten Hesabım Var, <a @click="goToLogin" class="text-[#00B3D7] hover:text-[#0095B0] cursor-pointer">Giriş Yap</a></p>
+                <!-- Actions -->
+                <div class="space-y-4">
                     <button
-                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                        @click="register"
+                        class="btn-modern w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-3 px-6 rounded-xl focus:outline-none shadow-lg hover:shadow-xl"
+                        type="submit"
                         v-tooltip="'Kayıt Ol'"
                     >
                         Kayıt Ol
                     </button>
+
+                    <div class="text-center">
+                        <p class="text-gray-600">
+                            Zaten hesabınız var mı? 
+                            <a @click="goToLogin" class="text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer transition-colors">
+                                Giriş Yap
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </form>
         </div>
@@ -102,9 +125,22 @@ const goToLogin = () => {
 };
 </script>
 
-<style>
-.shadow-custom {
-    box-shadow: 0 -4px 6px -1px rgba(0, 179, 215, 0.5), 4px 0 6px -1px rgba(0, 179, 215, 0.5), -4px 0 6px -1px rgba(0, 179, 215, 0.5);
+<style scoped>
+.bg-gradient-animated {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
 }
 
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 </style>

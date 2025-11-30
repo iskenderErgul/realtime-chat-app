@@ -15,9 +15,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            FriendSeeder::class,
+            MessageSeeder::class,
             GroupSeeder::class,
-            GroupMessageSeeder::class,
             GroupMemberSeeder::class,
+            GroupMessageSeeder::class,
         ]);
     }
 }

@@ -2,33 +2,35 @@
     <div>
         <div v-if="selectedUser" class="flex flex-col h-screen">
             <!-- Header -->
-            <div class="bg-gray-300 px-4 py-2 flex items-center justify-between mt-20">
+            <div class="glass-header px-6 py-4 flex items-center justify-between mt-20 border-b border-white/20">
                 <div class="flex items-center space-x-3">
                     <template v-if="selectedUser.avatar">
-                        <img :src="selectedUser.avatar" alt="Avatar" class="rounded-full" width="45">
+                        <img :src="selectedUser.avatar" alt="Avatar" class="avatar rounded-full" width="45">
                     </template>
                     <template v-else>
-                        <div class="rounded-full bg-gray-300 w-12 h-12 flex items-center justify-center">
-                            <span class="font-semibold text-xl text-gray-600">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
+                        <div class="avatar avatar-initials rounded-full w-12 h-12">
+                            <span class="font-semibold text-xl">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
                         </div>
                     </template>
-                    <p class="font-semibold">{{ selectedUser.name }} {{ selectedUser.surname }}</p>
+                    <p class="font-semibold text-lg text-gray-800">{{ selectedUser.name }} {{ selectedUser.surname }}</p>
                 </div>
                 <div class="relative inline-block text-left group">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bi bi-three-dots-vertical w-6 h-6">
-                        <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                    </svg>
-                    <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
+                    <button class="p-2 hover:bg-white/50 rounded-lg transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-gray-700">
+                            <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                        </svg>
+                    </button>
+                    <div class="origin-top-right absolute right-0 w-44 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block overflow-hidden">
                         <div class="py-1">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="closeChatWindow">Close Chat</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="clearChat">Clear Chat</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" @click="closeChatWindow">Close Chat</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" @click="clearChat">Clear Chat</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Chat Messages -->
-            <div class="flex-1 overflow-y-auto bg-gray-100 p-4">
+            <div class="flex-1 overflow-y-auto p-6 chat-messages-area">
                 <div v-for="message in filteredMessages" :key="message.id" class="mb-4">
                     <div v-if="message.sender_id === currentUser.id" class="flex items-end justify-end">
                         <div class="flex flex-col items-end">
@@ -84,28 +86,28 @@
                                     <p class="text-white">{{ message.message }}</p>
                                 </div>
                             </div>
-                            <div v-else-if="message.type === 'text'" class="bg-green-500 p-2 rounded-md max-w-xs">
+                            <div v-else-if="message.type === 'text'" class="message-bubble message-sent">
                                 <p class="text-white">{{ message.message }}</p>
                             </div>
                         </div>
                         <!-- Avatar -->
                         <template v-if="currentUser.avatar">
-                            <img :src="currentUser.avatar" alt="Avatar" class="rounded-full ml-2" width="35">
+                            <img :src="currentUser.avatar" alt="Avatar" class="avatar rounded-full ml-2" width="35">
                         </template>
                         <template v-else>
-                            <div class="rounded-full bg-gray-300 w-9 h-9 flex items-center justify-center ml-2">
-                                <span class="font-semibold text-sm text-gray-600">{{ getInitials(currentUser.name, currentUser.surname) }}</span>
+                            <div class="avatar avatar-initials rounded-full w-9 h-9 ml-2">
+                                <span class="font-semibold text-sm">{{ getInitials(currentUser.name, currentUser.surname) }}</span>
                             </div>
                         </template>
                     </div>
 
                     <div v-else class="flex items-start">
                         <template v-if="selectedUser.avatar">
-                            <img :src="selectedUser.avatar" alt="Avatar" class="rounded-full mr-2" width="35">
+                            <img :src="selectedUser.avatar" alt="Avatar" class="avatar rounded-full mr-2" width="35">
                         </template>
                         <template v-else>
-                            <div class="rounded-full bg-gray-300 w-9 h-9 flex items-center justify-center mr-2">
-                                <span class="font-semibold text-sm text-gray-600">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
+                            <div class="avatar avatar-initials rounded-full w-9 h-9 mr-2">
+                                <span class="font-semibold text-sm">{{ getInitials(selectedUser.name, selectedUser.surname) }}</span>
                             </div>
                         </template>
                         <div class="flex flex-col items-start">
@@ -161,8 +163,8 @@
                                     <p class="text-white">{{ message.message }}</p>
                                 </div>
                             </div>
-                            <div v-else-if="message.type === 'text'" class="bg-blue-500 p-2 rounded-md max-w-xs">
-                                <p class="text-white">{{ message.message }}</p>
+                            <div v-else-if="message.type === 'text'" class="message-bubble message-received">
+                                <p>{{ message.message }}</p>
                             </div>
                         </div>
                     </div>
@@ -173,21 +175,22 @@
 
 
             <!-- Input Area -->
-            <div class="bg-gray-300 px-4 py-2 flex items-center border-t border-gray-400">
+            <div class="glass-header px-6 py-4 flex items-center gap-3 border-t border-white/20">
 
-                <label for="file-upload" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer">
-                    <font-awesome-icon :icon="['fas', 'paperclip']" class="text-lg"/>
+                <label for="file-upload" class="btn-modern p-3 bg-white/80 rounded-xl hover:bg-white cursor-pointer shadow-md">
+                    <font-awesome-icon :icon="['fas', 'paperclip']" class="text-lg text-gray-700"/>
                     <input id="file-upload" type="file" @change="handleFileSelection" class="hidden"/>
                 </label>
 
+                <div class="flex-1 flex items-center gap-2">
+                    <p v-if="fileName" class="text-sm text-gray-700 bg-white/60 px-3 py-2 rounded-lg">{{ fileName }}</p>
 
-                <p v-if="fileName" class="ml-2 text-gray-700">{{ fileName }}</p>
-
-                <!-- Message Input -->
-                <input v-model="newMessage" type="text" @keyup.enter="sendMessage" placeholder="Mesajınızı girin..." class="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring focus:border-blue-400 ml-2">
+                    <!-- Message Input -->
+                    <input v-model="newMessage" type="text" @keyup.enter="sendMessage" placeholder="Mesajınızı girin..." class="input-modern flex-1 px-4 py-3 rounded-xl focus:outline-none">
+                </div>
 
                 <!-- Send Button -->
-                <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">
+                <button @click="sendMessage" class="btn-modern px-5 py-3 bg-gradient-primary text-white rounded-xl shadow-lg hover:shadow-xl">
                     <font-awesome-icon :icon="['fas', 'paper-plane']" class="text-lg"/>
                 </button>
             </div>
@@ -197,10 +200,14 @@
 
 
 
-        <div v-else class="flex flex-col items-center justify-center h-screen">
-            <img src="https://picsum.photos/100" alt="" class="rounded-full">
-            <p class="mt-2 text-2xl font-semibold">IMS CHAT APP</p>
-            <p class="text-gray-600">Bir sohbet seç ve mesajlaşmaya başla</p>
+        <div v-else class="flex flex-col items-center justify-center h-screen animate-fade-in">
+            <div class="glass-card p-12 rounded-3xl text-center">
+                <div class="w-24 h-24 bg-gradient-primary rounded-full mx-auto mb-6 flex items-center justify-center">
+                    <font-awesome-icon :icon="['fas', 'comments']" class="text-5xl text-white"/>
+                </div>
+                <h2 class="text-3xl font-bold text-gradient mb-3">IMS CHAT APP</h2>
+                <p class="text-gray-600 text-lg">Bir sohbet seç ve mesajlaşmaya başla</p>
+            </div>
         </div>
 
         <FullScreenModal :imageSrc="currentImage" :isOpen="isModalOpen" @update:isOpen="isModalOpen = $event"/>
@@ -347,23 +354,33 @@ const clearChat = () => {
 </script>
 
 <style scoped>
+.glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.chat-messages-area {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .audio-player-container {
-    width: 100%; /* Full width to occupy the container */
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center the audio player horizontally */
+    align-items: center;
 }
 
 .audio-player {
-    width: 100%; /* Full width to fit within the container */
-    max-width: 100%; /* Ensure it doesn't exceed container width */
-    height: 50px; /* Adjust the height as needed */
+    width: 100%;
+    max-width: 100%;
+    height: 50px;
 }
 
 .audio-file-name {
-    margin-top: 8px; /* Space between player and file name */
-    font-size: 14px; /* Adjust font size */
-    color: #333; /* Text color */
-    text-align: center; /* Center align the text */
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
 }
 </style>

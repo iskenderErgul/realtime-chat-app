@@ -1,100 +1,117 @@
 <template>
-    <div class="mt-[80px] lg:container mx-auto border-r border-black ">
-        <div class="gap-4 bg-gray-100 ">
-            <div class=" shadow-md pt-2">
-                <div class="flex pl-2">
+    <div class="mt-[80px] lg:container mx-auto">
+        <div class="gap-4">
+            <div class="pt-2 px-3">
+                <div class="flex items-center gap-2 mb-4">
                     <input
                         v-model="searchQuery"
                         type="text"
                         placeholder="Aratın veya yeni bir sohbet başlatın"
-                        class="w-full p-2 rounded-md border-b border-gray-500 focus:outline-none focus:ring focus:border-blue-400 mb-4 bg-gray-100 text-black"
+                        class="input-modern flex-1 p-3 rounded-xl border-0 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
                     >
-                    <div class="relative inline-block text-left group mt-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bi bi-three-dots-vertical w-6 h-6">
-                            <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                        </svg>
-                        <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
+                    <div class="relative inline-block text-left group">
+                        <button class="p-2 hover:bg-white/50 rounded-lg transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-gray-700">
+                                <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                            </svg>
+                        </button>
+                        <div class="origin-top-right absolute right-0 w-48 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block overflow-hidden">
                             <div class="py-1">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="goToProfile(user.id)">Profile</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="goToAddFriend">Arkadaş Ekle</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="openAddGroupModal">Grup Oluştur</a>
+                                <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" @click="goToProfile(user.id)">
+                                    <font-awesome-icon :icon="['fas', 'user']" class="mr-2" />
+                                    Profile
+                                </a>
+                                <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" @click="goToAddFriend">
+                                    <font-awesome-icon :icon="['fas', 'user-plus']" class="mr-2" />
+                                    Arkadaş Ekle
+                                </a>
+                                <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" @click="openAddGroupModal">
+                                    <font-awesome-icon :icon="['fas', 'users']" class="mr-2" />
+                                    Grup Oluştur
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="h-screen overflow-y-auto ml-2">
+                <div class="h-screen overflow-y-auto pr-2">
+                    <!-- Friends List -->
                     <div>
                         <div
                             v-for="friendItem in filteredFriends"
                             :key="friendItem.id"
                             @click="selectUser(friendItem.friend.id)"
-                            class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
+                            class="flex items-center p-3 cursor-pointer rounded-xl hover:bg-white/60 mb-2 transition-all hover:shadow-md group"
                         >
-                            <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center">
-                                <span class="text-xl font-semibold" v-if="!friendItem.friend.avatar">{{ getInitials(friendItem.friend.name, friendItem.friend.surname) }}</span>
-                                <img v-else :src="friendItem.friend.avatar" alt="avatar" class="w-12 h-12 rounded-full">
+                            <div class="avatar w-12 h-12 bg-gradient-primary rounded-full mr-3 flex items-center justify-center flex-shrink-0">
+                                <span class="text-lg font-semibold text-white" v-if="!friendItem.friend.avatar">{{ getInitials(friendItem.friend.name, friendItem.friend.surname) }}</span>
+                                <img v-else :src="friendItem.friend.avatar" alt="avatar" class="w-12 h-12 rounded-full object-cover">
                             </div>
-                            <div>
-                                <p class="font-semibold">{{ friendItem.friend.name }} {{ friendItem.friend.surname }}</p>
-                                <p class="text-gray-600 text-sm">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-gray-800 truncate">{{ friendItem.friend.name }} {{ friendItem.friend.surname }}</p>
+                                <p class="text-gray-600 text-sm truncate">
                                     {{ formatLastMessage(friendItem.last_message, friendItem.last_message_sender_id) }}
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-4">
+                    <!-- Groups List -->
+                    <div class="mt-6" v-if="filteredGroups.length > 0">
+                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-2">Gruplar</h3>
                         <div
                             v-for="group in filteredGroups"
                             :key="group.id"
                             @click="selectGroup(group.id)"
-                            class="flex cursor-pointer rounded-md hover:bg-gray-200 mb-2"
+                            class="flex items-center p-3 cursor-pointer rounded-xl hover:bg-white/60 mb-2 transition-all hover:shadow-md group"
                             v-tooltip="group.name"
                         >
-                            <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center">
-                                <span class="text-xl font-semibold " v-if="!group.avatar">{{ getGroupInitials(group.name) }}</span>
-                                <img v-else :src="group.avatar" alt="avatar" class="w-12 h-12 rounded-full">
+                            <div class="avatar w-12 h-12 bg-gradient-secondary rounded-full mr-3 flex items-center justify-center flex-shrink-0">
+                                <span class="text-lg font-semibold text-white" v-if="!group.avatar">{{ getGroupInitials(group.name) }}</span>
+                                <img v-else :src="group.avatar" alt="avatar" class="w-12 h-12 rounded-full object-cover">
                             </div>
-                            <div>
-                                <p class="font-semibold">{{ getTruncatedGroupName(group.name) }}</p>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-gray-800 truncate">{{ getTruncatedGroupName(group.name) }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
         <!-- Add Group Modal -->
-        <div v-if="showAddGroupModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">Yeni Grup Oluştur</h2>
-                <div class="mb-4">
-                    <label for="name" class="block text-gray-700 font-semibold">Grup Adı</label>
-                    <input v-model="groupName" type="text" id="name" class="w-full px-4 py-2 border rounded-md" required>
+        <div v-if="showAddGroupModal" class="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
+            <div class="glass-card rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in">
+                <h2 class="text-2xl font-bold text-gradient mb-6">Yeni Grup Oluştur</h2>
+                <div class="mb-5">
+                    <label for="name" class="block text-gray-700 font-semibold mb-2">Grup Adı</label>
+                    <input v-model="groupName" type="text" id="name" class="input-modern w-full px-4 py-3 rounded-xl" required>
                 </div>
-                <div class="mb-4">
-                    <label for="description" class="block text-gray-700 font-semibold">Açıklama</label>
-                    <textarea v-model="groupDescription" id="description" class="w-full px-4 py-2 border rounded-md" required></textarea>
+                <div class="mb-5">
+                    <label for="description" class="block text-gray-700 font-semibold mb-2">Açıklama</label>
+                    <textarea v-model="groupDescription" id="description" class="input-modern w-full px-4 py-3 rounded-xl min-h-[100px]" required></textarea>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 font-semibold">Üyeler</label>
-                    <ul v-if="selectedMembers.length > 0" class="mt-2">
-                        <li v-for="member in selectedMembers" :key="member.id" class="flex items-center justify-between bg-gray-100 px-3 py-1 rounded-md mb-1">
-                            <span>{{ member.name }} {{ member.surname }}</span>
-                            <button type="button" @click="removeMember(member.id)" class="ml-2 text-red-500">Kaldır</button>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Üyeler</label>
+                    <ul v-if="selectedMembers.length > 0" class="mt-2 space-y-2 mb-3">
+                        <li v-for="member in selectedMembers" :key="member.id" class="flex items-center justify-between bg-gray-100 px-4 py-2 rounded-lg">
+                            <span class="font-medium">{{ member.name }} {{ member.surname }}</span>
+                            <button type="button" @click="removeMember(member.id)" class="text-red-500 hover:text-red-700 font-semibold">Kaldır</button>
                         </li>
                     </ul>
-                    <div class="mt-2">
-                        <button v-for="friend in messagedFriends" :key="friend.friend.id" type="button" @click="addMember(friend.friend)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">{{ friend.friend.name }} {{ friend.friend.surname }}</button>
+                    <div class="flex flex-wrap gap-2">
+                        <button v-for="friend in messagedFriends" :key="friend.friend.id" type="button" @click="addMember(friend.friend)" class="btn-modern bg-gradient-primary text-white px-4 py-2 rounded-lg text-sm">
+                            {{ friend.friend.name }} {{ friend.friend.surname }}
+                        </button>
                     </div>
                 </div>
-                <div class="flex justify-end">
-                    <div>
-                        <button @click="createGroup" class="bg-green-500 text-white px-4 py-2 rounded-md mr-2">Grup Oluştur</button>
-                    </div>
-                    <div>
-                        <button @click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded-md">İptal</button>
-                    </div>
+                <div class="flex gap-3">
+                    <button @click="createGroup" class="btn-modern flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+                        Grup Oluştur
+                    </button>
+                    <button @click="closeModal" class="btn-modern flex-1 bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+                        İptal
+                    </button>
                 </div>
             </div>
         </div>

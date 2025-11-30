@@ -2,45 +2,46 @@
   <div>
     <div v-if="selectedGroupId" class="flex flex-col h-screen">
       <!-- Header -->
-      <div class="bg-gray-300 px-4 py-2 flex items-center justify-between mt-20">
+      <div class="glass-header px-6 py-4 flex items-center justify-between mt-20 border-b border-white/20">
         <div class="flex items-center space-x-3">
-          <div class="rounded-full bg-gray-300 w-12 h-12 flex items-center justify-center">
-            <span class="font-semibold text-xl text-gray-600">{{ getGroupInitials(selectedGroupName)}}</span>
+          <div class="avatar avatar-initials rounded-full w-12 h-12">
+            <span class="font-semibold text-xl">{{ getGroupInitials(selectedGroupName)}}</span>
           </div>
-          <p class="font-semibold">{{selectedGroupName}}</p>
+          <p class="font-semibold text-lg text-gray-800">{{selectedGroupName}}</p>
         </div>
         <div class="relative inline-block text-left group">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bi bi-three-dots-vertical w-6 h-6">
-            <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-          </svg>
-          <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
+          <button class="p-2 hover:bg-white/50 rounded-lg transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-gray-700">
+              <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+            </svg>
+          </button>
+          <div class="origin-top-right absolute right-0 w-44 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block overflow-hidden">
             <div class="py-1">
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="closeChatWindow">Close Chat</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" >Clear Chat</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" @click="groupSettings(selectedGroupId)" >Group Settings</a>
+              <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" @click="closeChatWindow">Close Chat</a>
+              <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" >Clear Chat</a>
+              <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gradient-primary hover:text-white cursor-pointer transition-all" @click="groupSettings(selectedGroupId)" >Group Settings</a>
             </div>
           </div>
         </div>
       </div>
 
 
-      <div class="flex-1 overflow-y-auto bg-gray-100 p-4">
+      <div class="flex-1 overflow-y-auto p-6 chat-messages-area">
         <!-- Message Display Area -->
         <div v-for="message in messages" :key="message.id" class="mb-4">
           <div v-if="message.sender_id === currentUser.id" class="flex items-end justify-end">
-            <div class="bg-green-500 p-2 rounded-md">
+            <div class="message-bubble message-sent">
               <p class="text-white" :data-tooltip="formatDate(message.updated_at)"
                  v-tooltip="formatDate(message.updated_at)">{{ message.message }}</p>
             </div>
           </div>
           <div v-else class="flex items-start">
             <div class="flex items-center">
-              <div class="bg-gray-300 text-black rounded-full w-8 h-8 flex items-center justify-center mr-2">
+              <div class="avatar avatar-initials rounded-full w-8 h-8 mr-2">
                 <p class="text-sm">{{ getUserInitials(message.sender) }}</p>
               </div>
-              <div class="bg-blue-500 p-2 rounded-md">
-                  <p class="text-white"
-                     v-tooltip="`${message.sender.name} ${message.sender.surname} - ${formatDate(message.updated_at)}`">
+              <div class="message-bubble message-received">
+                  <p v-tooltip="`${message.sender.name} ${message.sender.surname} - ${formatDate(message.updated_at)}`">
                       {{ message.message }}
                   </p>
               </div>
@@ -51,17 +52,23 @@
 
 
       <!-- Message Input -->
-      <div class="bg-gray-300 px-4 py-2 flex items-center">
-        <input v-model="newMessage" type="text"  @keyup.enter="sendMessage"  placeholder="Type your message..." class="w-full p-2 rounded-md border border-gray-500 focus:outline-none focus:ring focus:border-blue-400">
-        <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Send</button>
+      <div class="glass-header px-6 py-4 flex items-center gap-3 border-t border-white/20">
+        <input v-model="newMessage" type="text"  @keyup.enter="sendMessage"  placeholder="Mesajınızı girin..." class="input-modern flex-1 px-4 py-3 rounded-xl focus:outline-none">
+        <button @click="sendMessage" class="btn-modern px-5 py-3 bg-gradient-primary text-white rounded-xl shadow-lg hover:shadow-xl">
+          <font-awesome-icon :icon="['fas', 'paper-plane']" class="text-lg"/>
+        </button>
       </div>
     </div>
 
     <!-- Initial State -->
-    <div v-else class="flex flex-col items-center justify-center h-screen">
-      <img src="https://picsum.photos/100" alt="" class="rounded-full">
-      <p class="mt-2 text-2xl font-semibold">IMS CHAT APP</p>
-      <p class="text-gray-600">Select a chat and start messaging</p>
+    <div v-else class="flex flex-col items-center justify-center h-screen animate-fade-in">
+      <div class="glass-card p-12 rounded-3xl text-center">
+        <div class="w-24 h-24 bg-gradient-secondary rounded-full mx-auto mb-6 flex items-center justify-center">
+          <font-awesome-icon :icon="['fas', 'users']" class="text-5xl text-white"/>
+        </div>
+        <h2 class="text-3xl font-bold text-gradient mb-3">IMS CHAT APP</h2>
+        <p class="text-gray-600 text-lg">Bir grup seç ve mesajlaşmaya başla</p>
+      </div>
     </div>
   </div>
 </template>
@@ -189,3 +196,15 @@ watch(() => selectedGroupId, async (newGroupId) => {
 }, { immediate: true });
 
 </script>
+
+<style scoped>
+.glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.chat-messages-area {
+    background: rgba(255, 255, 255, 0.3);
+}
+</style>

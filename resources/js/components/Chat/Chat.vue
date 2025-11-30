@@ -1,23 +1,24 @@
 <template>
-    <div class="grid grid-rows-[auto,1fr] h-screen overflow-hidden ">
+    <div class="grid grid-rows-[auto,1fr] h-screen overflow-hidden bg-gradient-chat">
 
-        <div class="w-full ">
+        <div class="w-full">
             <Header></Header>
         </div>
 
 
-        <div class="grid grid-cols-[1fr,4fr] h-full  ">
+        <div class="grid grid-cols-1 lg:grid-cols-[300px,1fr] xl:grid-cols-[350px,1fr] h-full">
 
-            <div class="min-w-[200px] overflow-y-auto  bg-gray-100">
+            <!-- Sidebar - Hidden on mobile when chat is selected -->
+            <div class="sidebar-panel overflow-y-auto glass-sidebar border-r border-white/20" :class="{'hidden': selectedUserId || selectedGroupId, 'lg:block': true}">
                 <UserListComponent :currentUserId="currentUserId" :users="users" @userSelected="setSelectedUser" @groupSelected="setSelectedGroup" />
             </div>
 
             <!-- Chat Window -->
-            <div v-if="!selectedGroupId" class="flex flex-col flex-1 overflow-hidden  bg-gray-100">
+            <div v-if="!selectedGroupId" class="flex flex-col flex-1 overflow-hidden">
                 <ChatWindowComponent :users="users" :currentUser="currentUser" :selectedUserId="selectedUserId"/>
             </div>
 
-            <div v-else class="flex flex-col flex-1 overflow-hidden  bg-gray-100">
+            <div v-else class="flex flex-col flex-1 overflow-hidden">
                 <GroupChatWindow :currentUser="currentUser"  :selectedGroupId="selectedGroupId"/>
             </div>
 
@@ -70,3 +71,23 @@ onMounted(() => {
 });
 
 </script>
+
+<style scoped>
+.glass-sidebar {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 1023px) {
+    .sidebar-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+    }
+}
+</style>

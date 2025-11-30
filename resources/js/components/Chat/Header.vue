@@ -1,31 +1,31 @@
 <template>
-    <div class="bg-white border-b border-gray-300 fixed top-0 w-full shadow">
+    <div class="glass-header fixed top-0 w-full shadow-lg z-50 border-b border-white/20">
         <div class="p-4">
             <div class="grid grid-cols-3 gap-4">
                 <div class="col-span-1 min-w-[250px]">
                     <div class="flex items-center">
                         <template v-if="user.avatar">
-                            <img :src="user.avatar" alt="Avatar" class="rounded-full" width="45">
+                            <img :src="user.avatar" alt="Avatar" class="avatar rounded-full" width="45">
                         </template>
                         <template v-else>
-                            <div class="rounded-full bg-gray-300 w-12 h-12 flex items-center justify-center">
-                                <span class="font-semibold text-xl text-gray-600">{{ getInitials(user.name, user.surname) }}</span>
+                            <div class="avatar avatar-initials rounded-full w-12 h-12">
+                                <span class="font-semibold text-xl">{{ getInitials(user.name, user.surname) }}</span>
                             </div>
                         </template>
-                        <span class="font-semibold text-xl pl-1">{{ user.name }} {{ user.surname }}</span>
+                        <span class="font-semibold text-xl pl-3 text-gray-800">{{ user.name }} {{ user.surname }}</span>
                     </div>
                 </div>
-                <div class="col-span-2 flex justify-end items-center">
+                <div class="col-span-2 flex justify-end items-center gap-3">
 
                     <template v-if="showBackButton">
-                        <button @click="goToHomePage" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-6 flex items-center">
-                            <font-awesome-icon :icon="['fas', 'arrow-left']" class="mr-2 text-white" />
+                        <button @click="goToHomePage" class="btn-modern bg-gradient-to-r from-gray-600 to-gray-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-md hover:shadow-lg">
+                            <font-awesome-icon :icon="['fas', 'arrow-left']" class="text-white" />
                             Geri
                         </button>
                     </template>
 
-                    <button @click="logout" class="bg-transparent text-red-500 hover:bg-[#0095B0] hover:text-white rounded-full p-2 transition duration-300 ease-in-out" v-tooltip="'Çıkış Yap'">
-                        <font-awesome-icon :icon="['fas', 'sign-out-alt']" class="text-3xl"/>
+                    <button @click="logout" class="btn-modern bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-full p-3 shadow-md hover:shadow-xl" v-tooltip="'Çıkış Yap'">
+                        <font-awesome-icon :icon="['fas', 'sign-out-alt']" class="text-xl"/>
                     </button>
                 </div>
 
@@ -78,12 +78,9 @@ const getInitials = (name, surname) => {
 </script>
 
 <style scoped>
-
-button {
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #4b5563;
+.glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 </style>

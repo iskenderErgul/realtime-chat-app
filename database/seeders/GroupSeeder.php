@@ -14,15 +14,33 @@ class GroupSeeder extends Seeder
     public function run(): void
     {
         Group::create([
-            'name' => 'Grup 1',
-            'description' => 'Bu grup ile ilgili açıklama',
+            'name' => 'Proje Ekibi',
+            'description' => 'Ana proje geliştirme ekibi',
             'admin_id' => 1,
         ]);
 
         Group::create([
-            'name' => 'Grup 2',
-            'description' => 'Başka bir grup açıklaması',
+            'name' => 'Futbol Takımı',
+            'description' => 'Haftalık futbol maçları için grup',
+            'admin_id' => 4,
+        ]);
+
+        Group::create([
+            'name' => 'Ders Çalışma Grubu',
+            'description' => 'Üniversite dersleri için çalışma grubu',
+            'admin_id' => 8,
+        ]);
+
+        Group::create([
+            'name' => 'Aile',
+            'description' => 'Aile üyeleri grubu',
             'admin_id' => 1,
+        ]);
+
+        Group::create([
+            'name' => 'Arkadaşlar',
+            'description' => 'Yakın arkadaşlar grubu',
+            'admin_id' => 3,
         ]);
 
     }
